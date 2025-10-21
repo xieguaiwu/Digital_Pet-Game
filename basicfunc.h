@@ -131,7 +131,7 @@ int randomnum;//随机数的返回值
 char key;//按键
 bool isbadint;
 
-const string vertion = "0.2.3";
+const string version = "0.2.3";
 const string phase = "alpha";
 
 //烹饪变量
