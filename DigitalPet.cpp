@@ -6,14 +6,12 @@
 unsigned int days = 1;
 bool died = false;
 
-
 unsigned int turns = 1;
 
 string cheating;
 const bool cheatable = false;
 unsigned int Mopluse;
 bool Bband = false; //have random event no.4 been finished or not
-
 
 //random event no.2
 bool cheat = false;
@@ -27,17 +25,10 @@ float Einvest;//rate of profit
 const unsigned int price_mouse = 90, price_slipper = 20, price_lone = 10, price_heartsaver = 10000;
 const unsigned int price_pbutter = 35, price_mbutter = 50, price_sug = 8, price_sod = 9, price_wat = 0, price_flo = 6;
 //ingredient you have
-unsigned int sug;
-unsigned int sul;
-unsigned int sod;
-unsigned int wat;
-unsigned int flo;
+unsigned int storage[5];
+
 //ingredient added
-unsigned int Isug;
-unsigned int Isul;
-unsigned int Isod;
-unsigned int Iwat;
-unsigned int Iflo;
+unsigned int storageAdding[5];
 
 unsigned int Cid = 0; //note id
 vector<string> backpackmeal;//name
@@ -45,8 +36,6 @@ vector<int> backpackcalr;//energy
 vector<int> backpackspend;//cost, will be used in latter versions
 vector<int> backpackall;//total amount
 vector<float> backpackeffect;//effect
-unsigned int Crow;//for circulation
-unsigned int CTP;//for circulation
 
 void interact();
 
@@ -95,7 +84,7 @@ void notice() {
 #ifdef _WIN32
 	cout << "PRESS 'X' TO RESET THE THEME COLOR\n";
 #endif
-	cout << "PRESS '?' TO CHECK THE INSTRUCTIONS\n";
+	//cout << "PRESS '?' TO CHECK THE INSTRUCTIONS\n";
 	if (invest) {
 		cout << "PRESS 'V' TO CHECK THE [STATUS OF INVESTMENT]\n";
 		Vacheve = true;
@@ -113,10 +102,11 @@ void Cpushback(string bloodyname, int bloodycalr, int bloodyspend, int bloodyall
 	++Cid;
 }
 
+unsigned int Crow;//for circulation
 void Cclean() {//empty
 	Crow = 1;
 	while (1) {
-		if (Crow == Cid)break; //backpackmeal starts from 0
+		if (Crow >= Cid)break; //backpackmeal starts from 0
 		backpackmeal[Crow - 1] = "";
 		++Crow;
 	}
@@ -128,7 +118,7 @@ void Cdrop(int IDI) {//IDI=id of the dropped item
 	Cid = Cid - 1;
 	Crow = IDI;
 	while (1) {
-		if (Crow == Cid)break; //×¢Òâ£¬´Ë´¦CrowµÈÓÚCid£¬Ïàµ±ÓÚ°Ñ×îºóÒ»¸öÎïÆ·¸³ÖµÎª0
+		if (Crow >= Cid)break;
 		backpackmeal[Crow] = backpackmeal[Crow + 1];
 		backpackcalr[Crow] = backpackcalr[Crow + 1];
 		backpackspend[Crow] = backpackspend[Crow + 1];
@@ -138,27 +128,56 @@ void Cdrop(int IDI) {//IDI=id of the dropped item
 }
 
 void Cfour() {
-	if (sug <= 0) {
-		sug = 0;
-	}
-	if (sod <= 0) {
-		sod = 0;
-	}
-	if (sul <= 0) {
-		sul = 0;
-	}
-	if (wat <= 0) {
-		wat = 0;
-	}
-	if (flo <= 0) {
-		flo = 0;
+	unsigned char Cfour_rounder;
+	for (Cfour_rounder = 0; Cfour_rounder < 5; Cfour_rounder ++) {
+		if (storage[Cfour_rounder] <= 0)storage[Cfour_rounder] = 0;
 	}
 }
 
 bool Jcook = false, wrongtype;
+void handle_putting() {
+	wrongtype = false;
+	cout << "(You can input 0 to quit this menu)\n";
+
+	unsigned char rounder = 0;
+	while (!wrongtype) {
+		unsigned int inter_trans;
+		if (rounder >= 5) break;
+		cout << "How much ";
+		if (rounder == 0)cout << "sugar";
+		else if (rounder == 1)cout << "salt";
+		else if (rounder == 2)cout << "sodium bicarbonate";
+		else if (rounder == 3)cout << "water";
+		else if (rounder == 4)cout << "flour";
+		cout << " do you want to put in? Input the number of ";
+		if (rounder == 3)cout << "milliliter";
+		else cout << "grams";
+		cout << " :";
+
+		cin >> inter_trans;
+		badint();
+		if (isbadint || inter_trans <= 0) {
+			wrongtype = true;
+		} else if (!isbadint && (storageAdding[rounder] < 0 || storageAdding[rounder] > storage[rounder])) {
+			cout << "You don't have any!\n";
+		} else if (!isbadint && (storageAdding[rounder] > 0 && storageAdding[rounder] < storage[rounder])) {
+			storage[rounder] = storage[rounder] - storageAdding[rounder];
+			break;
+		}
+		++rounder;
+	}
+
+	cook(storageAdding[0], storageAdding[1], storageAdding[2], storageAdding[3], storageAdding[4], ck);
+	Meal = Tmeal[meal_tas()] + meal[meal_nam()];
+	cout << Meal << "!\n";
+	calr = cook(storageAdding[0], storageAdding[1], storageAdding[2], storageAdding[3], storageAdding[4], cr);
+	cout << "The energy of this dish is " << calr << " calories!\n";
+	Cpushback(Meal, calr, storageAdding[0] * 8 + storageAdding[1] * 13 + storageAdding[2] * 9, meal_all(), meal_effect()); //the price of salt is $ 6~21, take 13 as the average value
+}
+
 void Cincook() {
 	colorc(blue);
-	cout << "You have " << sug << " grams of sugar\nYou have " << sul << " grams of salt\nYou have " << sod << " grams of soda\nYou have " << wat << " milliliter of water (1000 millilitter max)\nYou have " << flo << " grams of flour\n";
+	cout << "You have " << storage[0] << " grams of sugar\nYou have " << storage[1] << " grams of salt\nYou have " << storage[2] << " grams of soda\nYou have " << storage[3] << " milliliter of water (1000 millilitter max)\nYou have " << storage[4] << " grams of flour\n";
 	colorc(white);
 	pausers::pause();
 	cout << "Keep cooking? (Press Y to continue, press N to quit this menu)\n";
@@ -174,83 +193,7 @@ void Cincook() {
 		}
 	}
 	if (!Jcook) {
-		wrongtype = false;
-		cout << "(You can input 0 to quit this menu)\n";
-		while (1) {
-			cout << "How much sugar do you want to put in? Input the number of grams:";
-			cin >> Isug;
-			badint();
-			if (!isbadint && Isug == 0) {
-				wrongtype = true;
-			} else if (!isbadint && (Isug < 0 || Isug > sug)) {
-				cout << "You don't have any!\n";
-			} else if (!isbadint && (Isug > 0 && Isug < sug)) {
-				sug = sug - Isug;
-				break;
-			}
-		}
-
-		while (!wrongtype) {
-			cout << "How much salt do you want to put in? Input the number of grams:";
-			cin >> Isul;
-			badint();
-			if (!isbadint) {
-				if (Isul == 0)wrongtype = true;
-				if (Isul < 0 || Isul > sul)cout << "You don't have any!\n";
-				else {
-					sul = sul - Isul;
-					break;
-				}
-			}
-		}
-		while (!wrongtype) {
-			cout << "How much sodium bicarbonate do you want to put in? Input the number of grams:";
-			cin >> Isod;
-			badint();
-			if (!isbadint) {
-				if (Isod == 0)wrongtype = true;
-				if (Isod < 0 || Isod > sod)cout << "You don't have any!\n";
-				else {
-					sod = sod - Isod;
-					break;
-				}
-			}
-		}
-		while (!wrongtype) {
-			cout << "How much water do you want to put in? Input the number of milliliter:";
-			cin >> Iwat;
-			badint();
-			if (!isbadint) {
-				if (Iwat == 0)wrongtype = true;
-				if (Iwat < 0 || Iwat > wat)cout << "You don't have any!\n";
-				else {
-					wat = wat - Iwat;
-					break;
-				}
-			}
-		}
-		while (!wrongtype) {
-			cout << "How much flour do you want to put in? Input the number of grams:";
-			cin >> Iflo;
-			badint();
-			if (!isbadint) {
-				if (Iflo == 0)wrongtype = true;
-				if (Iflo < 0 || Iflo > flo)cout << "You don't have any!\n";
-				else {
-					flo = flo - Iflo;
-					break;
-				}
-			}
-		}
-		cook(Isug, Isul, Isod, Iwat, Iflo, ck);
-		if (Isug == 0 && Isul == 0 && Isod == 0 && Iwat == 0 && Iflo == 0)cout << meal[cook(Isug, Isul, Isod, Iwat, Iflo, ck)] << "£¡\n";
-		else {
-			Meal = Tmeal[meal_tas()] + meal[meal_nam()];
-			cout << Meal << "!\n";
-			calr = cook(Isug, Isul, Isod, Iwat, Iflo, cr);
-			cout << "The energy of this dish is " << calr << " calories!\n";
-			Cpushback(Meal, calr, Isug * 8 + Isul * 13 + Isod * 9, meal_all(), meal_effect()); //the price of salt is $ 6~21, take 13 as the average value
-		}
+		handle_putting();
 	} else {
 		Jcook = false;
 	}
@@ -267,89 +210,119 @@ void r1() {		//random event no.1
 	}
 }
 
+void handle_investment_deposite() {
+	cout << "You sign your name.\n";
+	invest = true;
+	while (1) {
+		cout << "Input the money you want to invest - ";
+		notices::money_have();
+		cin >> Iinvest;
+		badint();
+		if (Iinvest > money)cout << "You don't have that much of money! All you have is $ " << money << "!\n\n";
+		else if (!isbadint && Iinvest > 0) {
+			break;
+		} else if (!isbadint && (Iinvest == 0)) {
+			cout << "You give up the investment when it is by a hair!\n";
+			break;
+		} else if (!isbadint && (Iinvest < 0)) {
+			cout << "Failed to invest, please reenter!\n\n";
+		}
+	}
+	if (Iinvest != 0) {
+		cout << "You invest $ " << Iinvest << ".\n";
+		if (Iinvest == money) {
+			cout << "Your pet is very pleased when seeing you invested all your money.\n";
+			notices::hap_plus(2);
+			notices::sad_minus(3);
+			hap += 2;
+			sad -= 3;
+		}
+		money = money - Iinvest;
+		IINVEST = Iinvest;
+		Dinvest = r_events(3, 2, 1) + days;
+		invest = true;
+	} else {
+		cout << "Your pet is looking at you as if you are a retard.\n";
+		invest = false;
+	}
+
+}
+
 void r2() {		//random event no.2: venture capital
 	notices::your_pet();
 	cout << "walks to you with a paper, which said:\nVENTURE INVESTMENT\nInvestor:" << name << "\nVoucher: You\nSignature:________\n";
 	pausers::sure();
-	while (1) {
-		key = getch();
-		if (yes) {
-			cout << "You sign your name.\n";
-			invest = true;
-			while (1) {
-				cout << "Input the money you want to invest";
-				notices::money_have();
-				cin >> Iinvest;
-				badint();
-				if (!isbadint && !(Iinvest <= 0)) {
-					if (!(Iinvest > money))break;
-					else {
-						cout << "You don't have that much of money! All you have is $ " << money << "!\n\n";
-					}
-				} else if (!isbadint && (Iinvest == 0)) {
-					cout << "You give up the investment when it is by a hair!\n";
-					break;
-
-				} else if (!isbadint && (Iinvest < 0)) {
-					cout << "Failed to invest, please reenter!\n\n";
-
-				}
-			}
-			if (Iinvest != 0) {
-				cout << "You invest $ " << Iinvest << ".\n";
-				if (Iinvest == money) {
-					cout << "Your pet is very pleased when seeing you invested all your money.\n";
-					notices::hap_plus(2);
-					notices::sad_minus(3);
-					hap += 2;
-					sad -= 3;
-				}
-				money = money - Iinvest;
-				IINVEST = Iinvest;
-				Dinvest = r_events(3, 2, 1) + days;
-				invest = true;
-				break;
-			} else {
-				cout << "Your pet is looking at you as if you are a retard.\n";
-				break;
-				invest = false;
-			}
-		} else if (no) {
-			cout << "Your pet is looking at you as if you are a retard.\n";
-			break;
-			invest = false;
-		}
-		cout << "\n\n";
+	key = getch();
+	switch (key) {
+	case 'Y':
+	case 'y':
+		handle_investment_deposite();
+		break;
+	case 'N':
+	case 'n':
+		invest = false;
+		cout << "Your pet is looking at you as if you are a retard.\n";
+		break;
 	}
+	cout << "\n\n";
 }
 
 bool Phouse = false; //having a house or not
 bool Pmouse = false; //having a mouse or not
 int Pmouse_plus;//the happiness increased by mouse
+void handle_buy_10_dollars() {
+	if (!(money < 10)) {
+		money = money - 10;
+		cout << "You spent $ 10 to but $ " << randomnum << ". ";
+		if (randomnum > 10) {
+			cout << "What a silly great deal!\n";
+		}
+		if (randomnum == 10) {
+			cout << "What a balanced profit!\n";
+		}
+		if (randomnum < 10) {
+			cout << "What a foolish decision!\n";
+		}
+		money += randomnum;
+	} else {
+		notices::money_not();
+	}
+}
+
+void handle_opening_door() {
+	cout << "You open the door, just to realize that";
+	randomnum = r_events(114514, 5, 1);
+	if (randomnum == 2) {
+		cout << "your pet has already eated the window and entered the house.\n";
+		poo = true;
+	} else {
+		cout << "your pet has already entered the house.\n";
+	}
+}
+
+void handle_eating_door() {
+	cout << "You pretend that your can't hear " << name << "'s knocking, so your pet eats up the door!\nYour pet feels refreshed.\n";
+	notices::hap_plus(2);
+	notices::sad_minus(3);
+	hap += 2;
+	sad -= 3;
+	poo = true;
+
+}
+
 void r3() { //random event no.3
 	cout << "Your pet runs out of the house.\nFew hours later, your pet " << name << " starts to knock on the door.\n";
 	cout << "Open the door?\n";
 	pausers::sure();
-	while (1) {
-		key = getch();
-		if (yes) {
-			cout << "You open the door, just to realize that";
-			randomnum = r_events(114514, 5, 1);
-			if (randomnum == 2) {
-				cout << "your pet has already eated the window and entered the house.\n";
-				poo = true;
-			} else {
-				cout << "your pet has already entered the house.\n";
-			}
-			break;
-		} else if (no) {
-			cout << "You pretend that your can't hear " << name << "'s knocking, so your pet eats up the door!\nYour pet feels refreshed.\n";
-		}
-		notices::hap_plus(2);
-		notices::sad_minus(3);
-		hap += 2;
-		sad -= 3;
-		poo = true;
+	key = getch();
+	switch (key) {
+	case 'Y':
+	case 'y':
+		handle_opening_door();
+		break;
+	case 'N':
+	case 'n':
+		handle_eating_door();
 		break;
 	}
 	cout << "\n\n";
@@ -361,29 +334,15 @@ void r3() { //random event no.3
 		cout << "A) ";
 		randomnum = r_events(45, 50, 1);
 		cout << "$ " << randomnum << " Price: $ 10\nB) Don't buy anything\n";
-		while (1) {
-			key = getch();
-			if (key == 'A' || key == 'a') {
-				if (!(money < 10)) {
-					money = money - 10;
-					cout << "You spent $ 10 to but $ " << randomnum << ". ";
-					if (randomnum > 10) {
-						cout << "What a silly great deal!\n";
-					}
-					if (randomnum == 10) {
-						cout << "What a balanced profit!\n";
-					}
-					if (randomnum < 10) {
-						cout << "What a foolish decision!\n";
-					}
-					money += randomnum;
-				} else {
-					notices::money_not();
-				}
-				break;
-			} else if (key == 'B' || key == 'b') {
-				break;
-			}
+		key = getch();
+		switch (key) {
+		case 'A':
+		case 'a':
+			handle_buy_10_dollars();
+			break;
+		case 'B':
+		case 'b':
+			break;
 		}
 	}
 
@@ -564,23 +523,23 @@ void r5() {//random event no.5
 	if (randomnum == 1) { //sugar
 		randomnum = r_events(1234, 35, 1);
 		cout << randomnum << " grams of sugar!\n";
-		sug += randomnum;
+		storage[0] += randomnum;
 	} else if (randomnum == 2) { //salt
 		randomnum = r_events(1234, 35, 1);
 		cout << randomnum << " grams of salt!\n";
-		sul += randomnum;
+		storage[1] += randomnum;
 	} else if (randomnum == 3) { //soda
 		randomnum = r_events(1234, 35, 1);
 		cout << randomnum << " grams of soda!\n";
-		sod += randomnum;
+		storage[2] += randomnum;
 	} else if (randomnum == 4) { //water
 		randomnum = r_events(1234, 35, 1);
 		cout << randomnum << " milliliters of water!\n";
-		if (wat + randomnum <= 1000)wat += randomnum;
+		if (storage[3] + randomnum <= 1000)storage[3] += randomnum;
 	} else if (randomnum == 5) { //flour
 		randomnum = r_events(1234, 35, 1);
 		cout << randomnum << " grams of flour!\n";
-		flo += randomnum;
+		storage[4] += randomnum;
 	}
 	pausers::pause();
 }
@@ -591,7 +550,7 @@ void r_e() {
 		if (!(randomnum > events)) {
 			if (randomnum == 1) r1();
 			else if (randomnum == 2) {
-				if (!invest)r2();
+				if (!invest && money > 0)r2();
 			} else if (randomnum == 3) r3();
 			else if (randomnum == 4) {
 				if (!Bband)r4();
@@ -761,7 +720,7 @@ void M_cok() {  //buying cooking ingredients
 				} else if (money >= gs * uglyprice) {
 					cout << "You have successfully bought " << gs << " grams of sugar!\n";
 					money = money - gs * uglyprice;
-					sug += gs;
+					storage[0] += gs;
 					pausers::pause();
 					break;
 				} else {
@@ -793,7 +752,7 @@ void M_cok() {  //buying cooking ingredients
 							if (money >= gs * uglyprice) {
 								cout << "You have successfully bought " << gs << " grams of salt!\n";
 								money = money - gs * uglyprice;
-								sul += gs;
+								storage[1] += gs;
 								pausers::pause();
 								break;
 							} else {
@@ -826,7 +785,7 @@ void M_cok() {  //buying cooking ingredients
 					if (money >= gs * uglyprice) {
 						cout << "You have successfully bought " << gs << " grams of soda!\n";
 						money = money - gs * uglyprice;
-						sod += gs;
+						storage[2] += gs;
 						pausers::pause();
 						break;
 					} else {
@@ -843,8 +802,8 @@ void M_cok() {  //buying cooking ingredients
 				cin >> gs;
 				badint();
 				if (isbadint)gs = 0;
-				if (wat < 1000 && wat + gs <= 1000) {
-					wat += gs;
+				if (storage[3] < 1000 && storage[3] + gs <= 1000) {
+					storage[3] += gs;
 					cout << "You have successfully bought " << gs << " milliliters of water!\n";
 					hyphen(4);
 					break;
@@ -870,7 +829,7 @@ void M_cok() {  //buying cooking ingredients
 					if (money >= gs * uglyprice) {
 						cout << "You have successfully bought " << gs << " grams of flour!\n";
 						money = money - gs * uglyprice;
-						flo += gs;
+						storage[4] += gs;
 						pausers::pause();
 						break;
 					} else {
@@ -1120,93 +1079,97 @@ void M_det() {//loan
 
 
 bool Dgm = false;
+void handle_pay_back_in_arrears() {
+	Pdet = Pdet + Edet * Pdet;
+	cout << "\n\nYou need to pay the bank $ " << Pdet << ", are you going to pay? (Press Y to confirm, and press N to refuse)\n";
+	while (1) {
+		key = getch();
+		if (yes) {
+			if (money >= Pdet) {
+				cout << "You have pay off the loan.\n";
+				det = false;
+				Pdet = 0;
+				Ldet = false;
+				Edet = 0;
+				money = money - Pdet;
+			} else {
+				cout << "Sorry, but you don't have enough money to pay!\nA few bank clerks are scolding you and your pet at your front door.\n";
+				notices::sad_plus(15);
+				notices::hap_minus(10);
+				hap = hap - 10;
+				sad += 15;
+			}
+			hyphen(3);
+			Dgm = false;
+			break;
+		}
+		if (no) {
+			cout << "You refuse to pay.\nA few bank clerks are scolding you and your pet at your front door.\n";
+			notices::sad_plus(15);
+			notices::hap_minus(10);
+			sad += 15;
+			hap = hap - 10;
+			hyphen(3);
+			Dgm = false;
+			break;
+		}
+	}
+}
+
+void handle_pay_back_out_arrears() {
+	Pdet = Pdet + Edet * Pdet;
+	cout << "\n\nIt's time for you to pay back. You need to pay the bank $ " << Pdet << ", are you going to pay? (Press Y to confirm, and press N to refuse)\n";
+	while (1) {
+		key = getch();
+		if (yes) {
+			if (money >= Pdet) {
+				cout << "You pay off the load. Because of your honesty,\n";
+				notices::hap_plus(2);
+				notices::sad_minus(1);
+				hap += 2;
+				sad -= 1;
+				money -= Pdet;
+				Pdet = 0;
+				det = false;
+				Mdet = 0;
+				Edet = 0;
+				Ddet = 0;
+			} else {
+				cout << "Sorry, but You don't have enough money to pay!\nEach day after this, your debt [+" << Edet << "]%!\n";
+				Mdet = 0;
+				Ddet = 0;
+				Ldet = true;
+			}
+			hyphen(3);
+			break;
+		}
+		if (no) {
+			cout << "You refuse to pay!\nEach day after this, your debt [+" << Edet << "]%!\n";
+			Ldet = true;
+			Mdet = 0;
+			Ddet = 0;
+			hyphen(3);
+			break;
+		}
+	}
+}
+
 void M_() {
 	if (money < 0) {
 		money = 0;
 	}
 	if (det) {
-		if (Ldet) {
-			if (Dgm) {
-				Pdet = Pdet + Edet * Pdet;
-				cout << "\n\nYou need to pay the bank $ " << Pdet << ", are you going to pay? (Press Y to confirm, and press N to refuse)\n";
-				while (1) {
-					key = getch();
-					if (yes) {
-						if (money >= Pdet) {
-							cout << "You have pay off the loan.\n";
-							det = false;
-							Pdet = 0;
-							Ldet = false;
-							Edet = 0;
-							money = money - Pdet;
-						} else {
-							cout << "Sorry, but you don't have enough money to pay!\nA few bank clerks are scolding you and your pet at your front door.\n";
-							notices::sad_plus(15);
-							notices::hap_minus(10);
-							hap = hap - 10;
-							sad += 15;
-						}
-						hyphen(3);
-						Dgm = false;
-						break;
-					}
-					if (no) {
-						cout << "You refuse to pay.\nA few bank clerks are scolding you and your pet at your front door.\n";
-						notices::sad_plus(15);
-						notices::hap_minus(10);
-						sad += 15;
-						hap = hap - 10;
-						hyphen(3);
-						Dgm = false;
-						break;
-					}
-				}
-			}
-		} else {
-			if (days == Ddet) {
-				Pdet = Pdet + Edet * Pdet;
-				cout << "\n\nIt's time for you to pay back. You need to pay the bank $ " << Pdet << ", are you going to pay? (Press Y to confirm, and press N to refuse)\n";
-				while (1) {
-					key = getch();
-					if (yes) {
-						if (money >= Pdet) {
-							cout << "You pay off the load. Because of your honesty,\n";
-							notices::hap_plus(2);
-							notices::sad_minus(1);
-							hap += 2;
-							sad -= 1;
-							money -= Pdet;
-							Pdet = 0;
-							det = false;
-							Mdet = 0;
-							Edet = 0;
-							Ddet = 0;
-						} else {
-							cout << "Sorry, but You don't have enough money to pay!\nEach day after this, your debt [+" << Edet << "]%!\n";
-							Mdet = 0;
-							Ddet = 0;
-							Ldet = true;
-						}
-						hyphen(3);
-						break;
-					}
-					if (no) {
-						cout << "You refuse to pay!\nEach day after this, your debt [+" << Edet << "]%!\n";
-						Ldet = true;
-						Mdet = 0;
-						Ddet = 0;
-						hyphen(3);
-						break;
-					}
-				}
-			}
+		if (Ldet && Dgm) {
+			handle_pay_back_in_arrears();
+		} else if (!Ldet && days == Ddet) {
+			handle_pay_back_out_arrears();
 		}
 	}
 }
 
 void check_cooking_ingredient() {
 	colorc(blue);
-	cout << "You have " << sug << " grams of sugar\nYou have " << sul << " grams of salt\nYou have " << sod << " grams of soda\nYou have " << wat << " milliliter of water (1000 milliliter max)\nYou have " << flo << " grams of flour\n";
+	cout << "You have " << storage[0] << " grams of sugar\nYou have " << storage[1] << " grams of salt\nYou have " << storage[2] << " grams of soda\nYou have " << storage[3] << " milliliter of water (1000 milliliter max)\nYou have " << storage[4] << " grams of flour\n";
 	colorc(white);
 	pausers::pausers::pause(1);
 	turns--;
@@ -1307,40 +1270,38 @@ void handle_clear_screen() {
 }
 
 void handle_buying() {
-	while (1) {
-		cout << "You have $ " << money << "\nWhat do you want to do next?\nA) Buy items\nB) Buy [cooking ingredients]\nC) Apply for loan\nD) Start cooking\nE) Quit this menu\n";
-		key = getch();
-		switch (key) {
-		case 'A':
-		case 'a' :
-			hyphen();
-			M_stu();
-			break;
-		case 'B':
-		case 'b':
-			hyphen();
-			M_cok();
-			break;
-		case 'C':
-		case 'c':
-			hyphen();
-			M_det();
-			break;
-		case 'D':
-		case 'd':
-			Cincook();
-			break;
-		case 'E':
-		case 'e':
-			hyphen();
-			notice();
-			key = getch();
-			interact();
-			break;
-		default :
-			cout << "\n";
-			notices::choose_again();
-		}
+	cout << "You have $ " << money << "\nWhat do you want to do next?\nA) Buy items\nB) Buy [cooking ingredients]\nC) Apply for loan\nD) Start cooking\nE) Quit this menu\n";
+	key = getch();
+	switch (key) {
+	case 'A':
+	case 'a' :
+		hyphen();
+		M_stu();
+		break;
+	case 'B':
+	case 'b':
+		hyphen();
+		M_cok();
+		break;
+	case 'C':
+	case 'c':
+		hyphen();
+		M_det();
+		break;
+	case 'D':
+	case 'd':
+		Cincook();
+		break;
+	case 'E':
+	case 'e':
+		//hyphen();
+		//notice();
+		//key = getch();
+		//interact();
+		break;
+	default :
+		cout << "\n";
+		notices::choose_again();
 	}
 }
 
@@ -1375,6 +1336,7 @@ void sub_handle_backpack_item_display() {
 	pausers::pause();
 }
 
+unsigned int CTP;//for circulation
 void sub_handle_backpack_item_interaction() {//waiting to update
 	hyphen(4);
 	cout << "A) Sell this dish\nB) Feed this dish to your pet\nC) Dump this dish\nD) Quit this menu\n";
@@ -1452,21 +1414,21 @@ void handle_cheating() {
 	else if (cheating == "Btv2")Btv2();
 	else if (cheating == "Btv3")Btv3();
 	else if (cheating == "Btv4")Btv4();
-	else if (cheating == "Sug") {
+	else if (cheating == "storage[0]") {
 		cin >> Mopluse;
-		sug = Mopluse;
-	} else if (cheating == "Sul") {
+		storage[0] = Mopluse;
+	} else if (cheating == "storage[1]") {
 		cin >> Mopluse;
-		sul = Mopluse;
-	} else if (cheating == "Sod") {
+		storage[1] = Mopluse;
+	} else if (cheating == "storage[2]") {
 		cin >> Mopluse;
-		sod = Mopluse;
-	} else if (cheating == "Wat") {
+		storage[2] = Mopluse;
+	} else if (cheating == "storage[3]") {
 		cin >> Mopluse;
-		wat = Mopluse;
-	} else if (cheating == "Flo") {
+		storage[3] = Mopluse;
+	} else if (cheating == "storage[4]") {
 		cin >> Mopluse;
-		flo = Mopluse;
+		storage[4] = Mopluse;
 	}
 	/*
 	else if (cheating == "Walk") {
@@ -1475,11 +1437,11 @@ void handle_cheating() {
 	}
 	*/
 	else if (cheating == "Cooking") {
-		wat = 100;
-		sug = 100;
-		sul = 100;
-		sod = 100;
-		flo = 100;
+		storage[3] = 100;
+		storage[0] = 100;
+		storage[1] = 100;
+		storage[2] = 100;
+		storage[4] = 100;
 	}
 	cout << "\n";
 	hyphen(250);
@@ -1686,7 +1648,7 @@ void o_days() {
 		pausers::pause();
 		cout << "\n\n";
 	}
-	r_e();
+	if (key != 'Q' && key != 'q')r_e();
 	turns = 1;
 	++days;
 }
