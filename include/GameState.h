@@ -10,9 +10,9 @@
 // ── Global game state ──
 // Declared extern here; defined in src/GameState.cpp
 
-extern unsigned int days;
+extern int days;
 extern bool         died;
-extern unsigned int turns;
+extern int turns;
 
 extern std::string  cheating;
 extern const bool   cheatable;
@@ -23,9 +23,9 @@ extern bool         Bband;         // random event #4 completed?
 extern bool cheat;
 extern bool loser;
 extern bool invest;
-extern unsigned int Iinvest;
-extern unsigned int IINVEST;
-extern unsigned int Dinvest;
+extern int Iinvest;
+extern int IINVEST;
+extern int Dinvest;
 extern float        Einvest;
 
 // ── Prices ──
@@ -39,37 +39,40 @@ extern const unsigned int price_sug;
 extern const unsigned int price_sod;
 extern const unsigned int price_wat;
 extern const unsigned int price_flo;
+extern const unsigned int price_milk;
+extern const unsigned int price_eggs;
+extern const unsigned int price_chocolate;
 
 // ── Ingredients ──
-extern unsigned int storage[5];        // sugar, salt, soda, water, flour
-extern unsigned int storageAdding[5];
+extern unsigned int storage[ING_COUNT];
+extern unsigned int storageAdding[ING_COUNT];
 
 // ── Backpack / cooked dishes ──
-extern unsigned int Cid;
+extern int Cid;
 extern std::vector<std::string> backpackmeal;
 extern std::vector<int>         backpackcalr;
 extern std::vector<int>         backpackspend;
 extern std::vector<int>         backpackall;
-extern std::vector<float>       backpackeffect;
+extern std::vector<int>         backpackeffect;
 
 // ── Pet stats ──
 extern std::string   name;
-extern unsigned int  age;
-extern unsigned int  hap;
-extern unsigned int  max_hap;
-extern unsigned int  sad;
-extern unsigned int  max_sad;
+extern int  age;
+extern int  hap;
+extern int  max_hap;
+extern int  sad;
+extern int  max_sad;
 extern bool          poo;
 extern unsigned char w_poo;
 extern bool          eat;
 extern unsigned char w_eat;
-extern bool          Pab;        // personality (dog / cat)
-extern bool          gender;
+extern Personality    Pab;        // personality (dog / cat)
+extern GenderType     gender;
 
-extern unsigned int  lifespan;
+extern int  lifespan;
 extern unsigned int  Mlifespan;
 extern unsigned int  Llifespan;
-extern unsigned int  money;
+extern int  money;
 
 // ── Derived constants ──
 extern const char    pers;
@@ -98,6 +101,7 @@ extern int  Bturns;
 extern int  Bdays;
 extern bool back;
 extern bool BFS;
+extern int  BFS_days;
 extern int  Msenting;
 
 // ─── Investment UI ──
@@ -111,7 +115,7 @@ extern unsigned int Mcalr;
 extern unsigned int calr;
 extern unsigned short Ncook;
 extern unsigned short Tcook;
-extern float Ecook;
+extern int Ecook;
 extern std::map<unsigned int, std::string> meal;
 extern std::map<unsigned int, std::string> Tmeal;
 extern std::map<int, std::string> effects;
@@ -132,7 +136,7 @@ extern int  cheatmoney;
 extern int  uglyprice;
 extern int  gs;
 extern int  CDSS;
-extern unsigned int CTP;
+extern int CTP;
 extern bool  Lifespanup_turns;
 extern int   Lifespanhap;
 

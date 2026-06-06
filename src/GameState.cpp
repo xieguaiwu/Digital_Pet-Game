@@ -1,21 +1,21 @@
 #include "GameState.h"
 
 // ── Core game state ──
-unsigned int days    = 1;
+int days    = 1;
 bool         died    = false;
-unsigned int turns   = 1;
+int turns   = 1;
 std::string  cheating;
 const bool   cheatable = false;
-unsigned int Mopluse;
+unsigned int Mopluse = 0;
 bool         Bband   = false;
 
 // ── Investment ──
 bool cheat  = false;
 bool loser  = false;
 bool invest = false;
-unsigned int Iinvest;
-unsigned int IINVEST;
-unsigned int Dinvest;
+int Iinvest;
+int IINVEST;
+int Dinvest;
 float        Einvest;
 
 // ── Prices ──
@@ -29,41 +29,44 @@ const unsigned int price_sug        = 8;
 const unsigned int price_sod        = 9;
 const unsigned int price_wat        = 0;
 const unsigned int price_flo        = 6;
+const unsigned int price_milk       = 10;
+const unsigned int price_eggs       = 15;
+const unsigned int price_chocolate  = 20;
 
 // ── Ingredients ──
-unsigned int storage[5]      = {0, 0, 0, 0, 0};
-unsigned int storageAdding[5]= {0, 0, 0, 0, 0};
+unsigned int storage[ING_COUNT]      = {0, 0, 0, 0, 0, 0, 0, 0};
+unsigned int storageAdding[ING_COUNT]= {0, 0, 0, 0, 0, 0, 0, 0};
 
 // ── Backpack ──
-unsigned int Cid = 0;
+int Cid = 0;
 std::vector<std::string> backpackmeal;
 std::vector<int>         backpackcalr;
 std::vector<int>         backpackspend;
 std::vector<int>         backpackall;
-std::vector<float>       backpackeffect;
+std::vector<int>         backpackeffect;
 
 // ── Pet stats ──
 std::string   name    = "PET";
-unsigned int  age     = 0;
-unsigned int  hap     = 50;
-unsigned int  max_hap = 100;
-unsigned int  sad     = 0;
-unsigned int  max_sad = 50;
+int  age     = 0;
+int  hap     = 60;
+int  max_hap = 100;
+int  sad     = 0;
+int  max_sad = 50;
 bool          poo     = false;
-unsigned char w_poo;
+unsigned char w_poo = 0;
 bool          eat     = false;
-unsigned char w_eat;
-bool          Pab;       // dog / cat
-bool          gender;
+unsigned char w_eat = 0;
+Personality   Pab = dog;   // dog / cat
+GenderType    gender = M;
 
-unsigned int  lifespan;
+int  lifespan;
 unsigned int  Mlifespan;
 unsigned int  Llifespan;
-unsigned int  money    = 50;
+int  money    = 50;
 
 const char    pers   = 2;
 const char    gens   = 2;
-const char    events = 6;
+const char    events = 5;
 
 int    randomnum;
 char   key;
@@ -84,6 +87,7 @@ int  Bturns = 1;
 int  Bdays  = 1;
 bool back   = false;
 bool BFS    = false;
+int  BFS_days = 0;
 int  Msenting;
 
 // ── Investment UI ──
@@ -97,7 +101,7 @@ unsigned int Mcalr;
 unsigned int calr;
 unsigned short Ncook;
 unsigned short Tcook;
-float Ecook;
+int Ecook;
 std::map<unsigned int, std::string> meal;
 std::map<unsigned int, std::string> Tmeal;
 std::map<int, std::string> effects;
@@ -118,6 +122,6 @@ int  cheatmoney;
 int  uglyprice;
 int  gs;
 int  CDSS        = 0;
-unsigned int CTP;
+int CTP;
 bool  Lifespanup_turns = false;
 int   Lifespanhap;     // initialised in starter_notice (60..85)

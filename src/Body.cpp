@@ -1,4 +1,5 @@
 #include "Body.h"
+#include "i18n.h"
 #include <iostream>
 
 bool have_parts[all_parts];

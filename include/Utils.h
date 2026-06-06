@@ -4,6 +4,11 @@
 #include <string>
 #include "GameState.h"
 
+// ── Platform detection ──
+//   _WIN32   → Windows (conio.h + system("color"))
+//   __APPLE__ → macOS (termios + ANSI escape codes)
+//   else     → Linux (termios + ANSI escape codes)
+//
 // ── Platform-specific input ──
 #ifdef _WIN32
 #include <conio.h>
@@ -15,7 +20,8 @@ int getch();
 void clear_screen();
 
 // ── Input validation ──
-void badint();
+void badint();        // legacy; prefer badint_clear()
+void badint_clear();  // handles EOF correctly
 
 // ── Decorative lines ──
 void hyphen(int shan = 0);
@@ -26,8 +32,15 @@ void colorc(int x);
 // ── Pronoun helper ──
 void refer(int refertype);
 
-// ── Random event generator ──
-int r_events(int sss = 0, int Mranding = 0, int Lranding = 0);
+// ── Random event generators ──
+int r_events(int sss = 0, int Mranding = 0, int Lranding = 0);  // [[deprecated]]  use named functions below
+int rand_event_type();                     // sss=0: random event 1..6
+int rand_personality();                    // sss=1: dog / cat
+int rand_gender();                         // sss=2: M / F
+int rand_range(int min, int max);          // sss>=3: random int in [min, max] inclusive
+
+// ── Console colour (ANSI, always available) ──
+void colorc_ansi(int x);
 
 // ── Utility classes ──
 

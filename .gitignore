@@ -12,3 +12,9 @@ copr_packaging.md
 # Build artifacts
 obj/
 src/*.o
+
+# Local documentation (personal notes, not part of project)
+doc/
+
+# COPR build artifacts
+fedora-42-x86_64/

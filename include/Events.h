@@ -1,8 +1,9 @@
 #ifndef DIGITALPET_EVENTS_H
 #define DIGITALPET_EVENTS_H
 
-// ── Random event entry point ──
-void r_e();
+// ── Random event entry points ──
+void r_e();      // legacy dispatcher (kept for backward compatibility)
+void r_e_v2();   // config-based dispatcher (uses EventConfig)
 
 // ── Individual events ──
 void r1();   // money gift

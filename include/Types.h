@@ -26,7 +26,7 @@ enum ThemeType { Tdef, Tadv, Tele, Tnor };
 enum CookType { ck, cr };
 
 // ── Dish names ──
-enum MealType { air, soda, indefine, flor, bread, bananas, cake };
+enum MealType { air, soda, indefine, flor, bread, bananas, cake, pizza, cookie, pancake, omelette, pudding };
 
 // ── Taste profiles ──
 enum Taste {
@@ -88,10 +88,10 @@ const unsigned char all_parts = body_pieces + face_pieces + arm_pieces + leg_pie
 
 // ── Dish effect constants (encoded as integers * 100 to avoid float keys) ──
 // Format: [type][value] where type: 0=life, 1=hap, 2=max_hap, 3=sad, 4=max_sad, 5=none
-constexpr int EFFECT_LIFE_UP1      =  10;   // lifespan +1
-constexpr int EFFECT_LIFE_UP2      =  20;   // lifespan +2
-constexpr int EFFECT_LIFE_DOWN1    = -10;   // lifespan -1
-constexpr int EFFECT_LIFE_DOWN2    = -20;   // lifespan -2
+constexpr int EFFECT_LIFE_UP1      =   1;   // lifespan +1
+constexpr int EFFECT_LIFE_UP2      =   2;   // lifespan +2
+constexpr int EFFECT_LIFE_DOWN1    =  -1;   // lifespan -1
+constexpr int EFFECT_LIFE_DOWN2    =  -2;   // lifespan -2
 
 constexpr int EFFECT_HAP_UP10      = 110;   // happiness +10
 constexpr int EFFECT_HAP_UP15      = 115;   // happiness +15
@@ -114,6 +114,28 @@ constexpr int EFFECT_MAXSAD_DOWN5  = -405;  // max sadness -5
 constexpr int EFFECT_MAXSAD_DOWN10 = -410;  // max sadness -10
 
 constexpr int EFFECT_NONE          = 500;   // no effect
+
+// ── Additional effect constants (Plan A) ──
+constexpr int EFFECT_LIFE_UP3      =   3;   // lifespan +3
+constexpr int EFFECT_HAP_UP20      = 120;   // happiness +20
+constexpr int EFFECT_SAD_DOWN10    = -310;  // sadness -10
+constexpr int EFFECT_MAXSAD_DOWN15 = -415;  // max sadness -15
+
+// ── Ingredient indices (Plan A) ──
+constexpr int ING_SUGAR    = 0;
+constexpr int ING_SALT     = 1;
+constexpr int ING_SODA     = 2;
+constexpr int ING_WATER    = 3;
+constexpr int ING_FLOUR    = 4;
+constexpr int ING_MILK     = 5;
+constexpr int ING_EGGS     = 6;
+constexpr int ING_CHOCOLATE = 7;
+constexpr int ING_COUNT    = 8;
+
+// ── Salt price range (Plan A) ──
+constexpr int SALT_PRICE_MIN   = 6;
+constexpr int SALT_PRICE_MAX   = 20;
+constexpr int SALT_PRICE_RANGE = SALT_PRICE_MAX - SALT_PRICE_MIN;
 
 // ── Yes / No key macros ──
 #define YES_KEY key == 'Y' || key == 'y'

@@ -2,8 +2,13 @@
 #include "Utils.h"
 #include "Cooking.h"
 #include "Events.h"
+#include "EventConfig.h"
+#include "RecipeDB.h"
 #include "Money.h"
 #include "Body.h"
+#include "i18n.h"
+#include "Games.h"
+#include "Diary.h"
 
 #include <iostream>
 #include <cstdlib>
@@ -36,9 +41,9 @@ static void e_poo() {
     if (w_poo > 10) w_poo = 10;      // [FIX] was `==`, now assignment
     if (w_poo > 5) {
         if (w_poo < 8) {
-            hap -= 5; sad += 3;
+            hap -= 3; sad += 2;
         } else {
-            hap -= 8; sad += 6;
+            hap -= 5; sad += 4;
         }
     }
 }
@@ -47,9 +52,9 @@ static void e_eat() {
     if (w_eat > 5) w_eat = 5;
     if (w_eat > 2) {
         if (w_eat < 4) {
-            hap -= 4; sad += 5;
+            hap -= 3; sad += 3;
         } else {
-            hap -= 8; sad += 7;
+            hap -= 5; sad += 5;
         }
     }
 }
@@ -58,7 +63,7 @@ static void e_age() {
     if (days != 0 && days % 10 == 0) {
         ++age;
         notices::your_pet();
-        cout << "is 1 year older!\n";
+        cout << tr(StrId::PET_OLDER) << "\n";
     }
 }
 
@@ -67,14 +72,14 @@ static void e_sad() {
     if (sad > max_sad) sad = max_sad;
     if (sad < max_sad) {
         if (sad > 25) {
-            if (sad < 38) { sad += 3; hap -= 6; }
-            else          { sad += 6; hap -= 10; }
+            if (sad < 38) { sad += 2; hap -= 4; }
+            else          { sad += 4; hap -= 7; }
         }
     } else {
         notices::your_pet();
-        cout << "is so depressed that";
+        cout << tr(StrId::PET_DEPRESSED);
         refer(nomin);
-        cout << "committed suicide.\n";
+        cout << tr(StrId::PET_SUICIDE) << "\n";
         death();
     }
 }
@@ -83,14 +88,19 @@ static void e_hap() {
     if (hap < 0) hap = 0;
     if (hap > max_hap) hap = max_hap;
     if (hap < max_hap) {
-        if (hap > 50 && hap < 76) {
+        if (hap > 30 && hap < 51) {
+            // Mild recovery zone: slow happiness gain, slight sadness reduction
+            hap += 1; sad -= 1;
+        } else if (hap > 50 && hap < 76) {
+            // Moderate recovery zone
             hap += 3; sad -= 3;
         } else if (hap >= 76) {
+            // High happiness zone
             hap += 4; sad -= 5;
             if (hap >= Lifespanhap && sad <= 15) {
                 if ((turns == 2 || turns == 4 || turns == 6 || turns == 8)
                     && !Lifespanup_turns) {
-                    cout << "Your pet's lifespan increased by 1 day!\n";
+                    cout << tr(StrId::LIFESPAN_INC_1) << "\n";
                     ++lifespan;
                     Lifespanup_turns = true;
                 } else {
@@ -99,6 +109,7 @@ static void e_hap() {
             }
         }
     } else {
+        // Already at max happiness
         sad -= 5;
     }
 }
@@ -109,26 +120,26 @@ static void e_hap() {
 
 static void death() {
     hyphen();
-    cout << "Your pet " << name << " had been through a life of "
-         << age << " years, and ";
+    cout << "Your pet " << name << tr(StrId::PET_LIFE_OF)
+         << age << tr(StrId::PET_YEARS_AND);
     refer(nomin);
-    cout << "had been through " << days << " days.\n";
-    cout << "When " << name << " was going to die, ";
-    if (poo) { refer(nomin); cout << "still wanted to defecate.\n"; }
-    if (eat) { refer(nomin); cout << "is still very hungry.\n"; }
-    cout << "When";
+    cout << tr(StrId::PET_HAD_THROUGH) << days << tr(StrId::PET_DAYS_PERIOD) << "\n";
+    cout << tr(StrId::PET_WHEN_DIE) << name << tr(StrId::PET_GOING_TO_DIE);
+    if (poo) { refer(nomin); cout << tr(StrId::PET_WANTED_DEFECATE) << "\n"; }
+    if (eat) { refer(nomin); cout << tr(StrId::PET_STILL_HUNGRY) << "\n"; }
+    cout << tr(StrId::PET_WHEN_DIE);
     refer(nomin);
-    cout << "was going to die, " << name << " ";
+    cout << tr(StrId::PET_GOING_TO_DIE) << name << " ";
     if (sad >= 38 && sad < 42 && hap < 50)
-        cout << "was a bit sad.\n";
+        cout << tr(StrId::PET_WAS_BIT_SAD) << "\n";
     else if (sad >= 42 && hap < 50)
-        cout << "was very depressed.\n";
+        cout << tr(StrId::PET_WAS_VERY_DEPRESSED) << "\n";
     else if (hap >= 50 && hap < 76 && sad < 38)
-        cout << "was quite happy.\n";
+        cout << tr(StrId::PET_WAS_QUITE_HAPPY) << "\n";
     else if (hap >= 76 && sad < 38)
-        cout << "was very happy.\n";
+        cout << tr(StrId::PET_WAS_VERY_HAPPY) << "\n";
     else if (hap >= 50 && sad >= 38)
-        cout << "was confused.\n";
+        cout << tr(StrId::PET_WAS_CONFUSED) << "\n";
     died = true;
     pausers::pause(1);
 }
@@ -138,23 +149,25 @@ static void death() {
 // ═══════════════════════════════════════════
 
 static void notice() {
-    cout << "\nPRESS 'Q' TO QUIT\n"
-            "PRESS 'F' TO FEED YOUR PET\n"
-            "PRESS 'I' TO INTERACT WITH YOUR PET\n"
-            "PRESS 'C' TO CHECK YOUR PET'S STATUS\n"
-            "PRESS 'S' TO CLEAR THE SCREEN\n"
-            "PRESS 'M' TO [PURCHASE], [APPLY FOR LOAN] OR [COOK]\n"
-            "PRESS 'B' TO CHECK THE [COOKING INGREDIENT] YOU ALREADY HAVE\n"
-            "PRESS 'O' TO CHECK THE DISHES YOU ALREADY COOKED\n";
+    cout << "\n" << tr(StrId::NOTICE_Q) << "\n"
+         << tr(StrId::NOTICE_F) << "\n"
+         << tr(StrId::NOTICE_I) << "\n"
+         << tr(StrId::NOTICE_C) << "\n"
+         << tr(StrId::NOTICE_S) << "\n"
+         << tr(StrId::NOTICE_M) << "\n"
+         << tr(StrId::NOTICE_B) << "\n"
+         << tr(StrId::NOTICE_O) << "\n";
 #ifdef _WIN32
-    cout << "PRESS 'X' TO RESET THE THEME COLOR\n";
+    cout << tr(StrId::NOTICE_X) << "\n";
 #endif
+    cout << tr(StrId::GAMES_KEY_HINT) << "\n"
+         << tr(StrId::DIARY_KEY_HINT) << "\n";
     if (invest) {
-        cout << "PRESS 'V' TO CHECK THE [STATUS OF INVESTMENT]\n";
+        cout << tr(StrId::NOTICE_V) << "\n";
         Vacheve = true;
     }
-    cout << "There are 8 times to press the key.\n"
-         << "You have " << 9 - turns << " times left\n";
+    cout << tr(StrId::TURNS_8_NOTICE) << "\n"
+         << tr_f(StrId::TURNS_LEFT, 9 - turns) << "\n";
 }
 
 // ═══════════════════════════════════════════
@@ -162,30 +175,33 @@ static void notice() {
 // ═══════════════════════════════════════════
 
 static void handle_quit_game() {
-    cout << "You quit the game.\n";
+    cout << tr(StrId::ACT_QUIT_GAME) << "\n";
     pausers::pause(4);
 }
 
 static void handle_feed_pet() {
-    cout << "You feed your pet.\n";
+    cout << tr(StrId::ACT_FEED_PET) << "\n";
     w_eat = 0;
     if (eat) { hap += 2; notices::hap_plus(2); }
     eat = false;
+    diary_add(tr(StrId::DIARY_ACT_FED));
     pausers::pause();
 }
 
 static void handle_defecate() {
-    cout << "You let your pet " << name << " defecate.\n";
+    cout << tr_f(StrId::ACT_LET_PET, name.c_str()) << tr(StrId::ACT_DEFECATE_PERIOD) << "\n";
     w_poo = 0;
     if (poo) { ++hap; notices::hap_plus(1); }
     poo = false;
+    diary_add(tr(StrId::DIARY_ACT_DEFECATED));
     pausers::pause();
 }
 
 static void handle_pat() {
-    cout << "You pat your pet " << name << ".\n";
+    cout << tr_f(StrId::ACT_PAT_PET, name.c_str()) << ".\n";
     hap += 4; sad -= 3;
     notices::hap_plus(4); notices::sad_minus(3);
+    diary_add(tr(StrId::DIARY_ACT_PATTED));
     pausers::pause();
 }
 
@@ -197,10 +213,10 @@ static void handle_quit_interaction_menu() {
 }
 
 static void handle_interact_with() {
-    cout << "\n\nINTERACTIONS:\n"
-            "A) Let your pet defecate\n"
-            "B) Pat your pet\n"
-            "C) Quit this menu\n";
+    cout << "\n\n" << tr(StrId::INT_MENU_TITLE) << "\n"
+         << tr(StrId::INT_A_DEFECATE) << "\n"
+         << tr(StrId::INT_B_PAT) << "\n"
+         << tr(StrId::INT_C_QUIT) << "\n";
     key = getch();
     switch (key) {
     case 'A': case 'a': handle_defecate();        break;
@@ -212,45 +228,44 @@ static void handle_interact_with() {
 }
 
 static void handle_status_display() {
-    cout << "---LIFESPAN---\n";
-    notices::your_pet();
-    cout << (Pab == cat ? "is a cat.\n" : "is a dog.\n");
-    notices::your_pet();
-    cout << "is " << age << " years old now.\n";
-    notices::your_pet();
-    cout << "can still live for " << lifespan - days + 1 << " days.\n";
-    notices::your_pet();
-    cout << "needs to reach at least [Happiness: " << Lifespanhap
-         << "] to prolong lifespan.\n";
-    cout << "---EMOTION---\n"
-         << "[Happiness: " << hap << "/" << max_hap << "]\n"
-         << "[Sadness: " << sad << "/" << max_sad << "]\n";
-    cout << "---PHYSIOLOGY---\n"
-         << "Wants to defecate: " << (poo ? "[YES]\n" : "[NO]\n")
-         << "Wants to eat: " << (eat ? "[YES]\n" : "[NO]\n");
-    turns--;
+    cout << tr(StrId::STAT_LIFESPAN_LABEL) << "\n";
+    cout << "Your pet " << name << " "
+         << (Pab == cat ? tr(StrId::STAT_IS_CAT) : tr(StrId::STAT_IS_DOG)) << "\n";
+    cout << "Your pet " << name << tr(StrId::STAT_IS_AGE)
+         << age << tr(StrId::STAT_YEARS_OLD_NOW) << "\n";
+    cout << "Your pet " << name << " "
+         << tr(StrId::STAT_CAN_LIVE) << lifespan - days + 1 << tr(StrId::PET_DAYS_PERIOD) << "\n";
+    cout << "Your pet " << name << " "
+         << tr(StrId::STAT_NEEDS_HAP) << Lifespanhap
+         << tr(StrId::STAT_TO_PROLONG) << "\n";
+    cout << tr(StrId::STAT_EMOTION_LABEL) << "\n"
+         << tr(StrId::STAT_HAPPINESS_LABEL) << hap << "/" << max_hap << "]\n"
+         << tr(StrId::STAT_SADNESS_LABEL) << sad << "/" << max_sad << "]\n";
+    cout << tr(StrId::STAT_PHYSIO_LABEL) << "\n"
+         << tr(StrId::STAT_WANTS_DEFECATE) << (poo ? tr(StrId::STAT_YES) : tr(StrId::STAT_NO)) << "\n"
+         << tr(StrId::STAT_WANTS_EAT) << (eat ? tr(StrId::STAT_YES) : tr(StrId::STAT_NO)) << "\n";
     pausers::pause();
 }
 
 static void handle_clear_screen() {
     clear_screen();
-    turns--;   // original decrements turns — preserved despite S being "free"
+    turns--;
 }
 
 static void handle_buying() {
-    cout << "You have $ " << money << "\n"
-            "What do you want to do next?\n"
-            "A) Buy items\n"
-            "B) Buy [cooking ingredients]\n"
-            "C) Apply for loan\n"
-            "D) Start cooking\n"
-            "E) Quit this menu\n";
+    cout << tr_f(StrId::BUY_HAVE_MONEY, money) << "\n"
+         << tr(StrId::BUY_WHAT_NEXT) << "\n"
+         << tr(StrId::BUY_A_ITEMS) << "\n"
+         << tr(StrId::BUY_B_INGREDIENTS) << "\n"
+         << tr(StrId::BUY_C_LOAN) << "\n"
+         << tr(StrId::BUY_D_COOK) << "\n"
+         << tr(StrId::BUY_E_QUIT) << "\n";
     key = getch();
     switch (key) {
     case 'A': case 'a': hyphen(); M_stu(); break;
     case 'B': case 'b': hyphen(); M_cok(); break;
     case 'C': case 'c': hyphen(); M_det(); break;
-    case 'D': case 'd': Cincook();         break;
+    case 'D': case 'd': Cincook_v2();      break;
     case 'E': case 'e':                    break;
     default:  cout << "\n"; notices::choose_again(); break;
     }
@@ -258,53 +273,101 @@ static void handle_buying() {
 
 static void handle_investment_info() {
     if (Vacheve) {
-        turns--;
         Vacheve = false;
         hyphen(5);
-        cout << "Money invested: $" << Iinvest << "\n"
-             << "Wait: " << Dinvest - days << " days.\n";
+        cout << tr_f(StrId::INV_MONEY_INVESTED, Iinvest) << "\n"
+             << tr_f(StrId::INV_WAIT_DAYS, Dinvest - days) << "\n";
     } else {
         hyphen(3);
-        cout << "\nPlease choose again!\n";
+        cout << "\n" << tr(StrId::INV_PLEASE_AGAIN) << "\n";
         notice();
         key = getch();
         interact();
     }
 }
 
+#ifdef _WIN32
 static void handle_color_change() {
     options::color_choose();
     turns--;
 }
+#endif
 
 // ── Backpack ──
 
 static void sub_handle_backpack_item_display() {
-    for (int i = 0; i < static_cast<int>(Cid); ++i) {
+    for (int i = 0; i < Cid; ++i) {
         cout << i << ". " << backpackmeal[i]
-             << " | Energy: " << backpackcalr[i]
-             << " | Effect: " << backpackeffect[i]
-             << " | Amount: " << backpackall[i] << "\n";
+             << " | " << tr(StrId::BP_ENERGY) << ": " << backpackcalr[i]
+             << " | " << tr(StrId::BP_EFFECT) << ": " << backpackeffect[i]
+             << " | " << tr(StrId::BP_AMOUNT) << ": " << backpackall[i] << "\n";
     }
     pausers::pause();
 }
 
 static void sub_handle_backpack_item_interaction() {
     hyphen(4);
-    cout << "A) Sell this dish\n"
-            "B) Feed this dish to your pet\n"
-            "C) Dump this dish\n"
-            "D) Quit this menu\n";
+    cout << tr(StrId::BP_SELL_FEED_DUMP) << "\n";
     while (true) {
         key = getch();
-        if (key == 'C' || key == 'c') {
-            cout << "Item #" << CTP << " dropped.\n";
-            Cdrop(CTP);
+        if (key == 'A' || key == 'a') {
+            // Sell: half the spend cost
+            int price = backpackspend[CTP] / 2;
+            if (price < 1) price = 1;
+            money += price;
+            cout << "Sold for $" << price << "!\n";
+            Cdrop(static_cast<int>(CTP));
+            pausers::pause();
+            break;
+        } else if (key == 'B' || key == 'b') {
+            // Feed: apply the dish effect
+            int effect = backpackeffect[CTP];
+            int abs_val = (effect < 0) ? -effect : effect;
+            int type = abs_val / 100;
+            int value = (effect < 0) ? -(abs_val % 100) : (abs_val % 100);
+            
+            cout << "You fed " << backpackmeal[CTP] << " to " << name << ".\n";
+            
+            if (type == 0) {        // lifespan
+                if (value > 0) lifespan += value;
+                else if (lifespan > -value) lifespan -= -value; else lifespan = 1;
+                cout << "Lifespan changed by " << value << ".\n";
+            } else if (type == 1) { // happiness
+                if (value > 0) { hap += value; if (hap > max_hap) hap = max_hap; }
+                else { if (hap > -value) hap -= -value; else hap = 0; }
+                notices::hap_plus(value);
+            } else if (type == 2) { // max happiness
+                if (value > 0) max_hap += value;
+                else if (max_hap > -value) max_hap -= -value; else max_hap = 1;
+            } else if (type == 3) { // sadness
+                if (value > 0) { sad += value; if (sad > max_sad) sad = max_sad; }
+                else { if (sad > -value) sad -= -value; else sad = 0; }
+                notices::sad_minus(-value);
+            } else if (type == 4) { // max sadness
+                if (value > 0) max_sad += value;
+                else if (max_sad > -value) max_sad -= -value; else max_sad = 1;
+            }
+            // type == 5: no effect
+            
+            cout << "Happiness: " << hap << "/" << max_hap
+                 << " | Sadness: " << sad << "/" << max_sad << "\n";
+            
+            // Reset hunger timer - the pet just ate!
+            w_eat = 0;
+            eat = false;
+            
+            diary_add(tr(StrId::DIARY_ACT_COOKED));
+            Cdrop(static_cast<int>(CTP));
+            pausers::pause();
+            break;
+        } else if (key == 'C' || key == 'c') {
+            cout << tr_f(StrId::BP_ITEM_DROPPED, CTP) << "\n";
+            Cdrop(static_cast<int>(CTP));
             break;
         } else if (key == 'D' || key == 'd') {
             break;
         } else {
-            break;  // sell/feed not yet implemented
+            break;
         }
     }
 }
@@ -314,16 +377,15 @@ static void handle_backpacking() {
     if (Cid != 0) {
         sub_handle_backpack_item_display();
         while (true) {
-            cout << "Input item number (negative to quit):";
-            cin >> CTP; badint();
-            if (isbadint || CTP >= Cid || CTP < 0) break;
+            cout << tr(StrId::BP_INPUT_NUM);
+            cin >> CTP; badint_clear();
+            if (isbadint || CTP >= Cid) break;
             sub_handle_backpack_item_interaction();
         }
     } else {
-        cout << "You don't have any dish!\n";
+        cout << tr(StrId::BP_NO_DISHES) << "\n";
         pausers::pause();
     }
-    turns--;
     hyphen(4);
 }
 
@@ -331,7 +393,7 @@ static void handle_backpacking() {
 
 static void handle_cheating() {
     hyphen(250);
-    cout << "Insert cheating code: ";
+    cout << tr(StrId::CHEAT_PROMPT);
     cin >> cheating;
     cout << "\n";
     if      (cheating == "Gmoney")       { cin >> Mopluse; money += Mopluse; }
@@ -358,7 +420,6 @@ static void handle_cheating() {
     else if (cheating == "Cooking")      { storage[0]=100;storage[1]=100;storage[2]=100;storage[3]=100;storage[4]=100; }
     cout << "\n";
     hyphen(250);
-    turns--;
 }
 
 static void handle_default() {
@@ -389,6 +450,8 @@ static void interact() {
 #ifdef _WIN32
     case 'X': case 'x':            handle_color_change();   break;
 #endif
+    case 'G': case 'g':            handle_minigames();       break;
+    case 'D': case 'd':            diary_view(); --turns;    break;
     case 'L': case 'l':            handle_cheating();       break;
     }
 }
@@ -414,26 +477,35 @@ static void o_days_pre_notice() {
     re_ini();
     e_age();
     if (cheatable) cout << "*";
-    cout << "DAY " << days << " .\n";
+    diary_new_day(days);
+    cout << tr_f(StrId::DAY_LABEL, days) << "\n";
     if (det && Ldet) Dgm = true;
-    if (eat) cout << "Your pet " << name << " is hungry.\n";
-    if (poo) cout << "Your pet " << name << " wants to defecate.\n\n";
+    if (eat) cout << "Your pet " << name << tr(StrId::DAY_HUNGRY) << "\n";
+    if (poo) cout << "Your pet " << name << tr(StrId::DAY_WANTS_DEFECATE);
     if (Pmouse) {
-        Pmouse_plus = r_events(1784, 5, 1);
-        cout << "Your pet is playing with the toy mouse.\n";
+        Pmouse_plus = rand_range(1, 5);
+        cout << tr(StrId::DAY_PLAYING_MOUSE) << "\n";
         notices::hap_plus(Pmouse_plus);
         hap += Pmouse_plus;
     }
+    // BUG H7: BFS passive income with expiration after 30 days
     if (BFS) {
-        Msenting = r_events(1321, 500, 20);
-        cout << "Some fans want " << name << " to keep performing, so they put $"
-             << Msenting << ".\n";
-        notices::money_plus(Msenting);
-        money += Msenting;
+        ++BFS_days;
+        if (BFS_days > 30) {
+            BFS = false;
+            BFS_days = 0;
+            cout << name << "'s fans have moved on. The rock band days are over.\n";
+        } else {
+            Msenting = rand_range(20, 519);
+            cout << tr_f(StrId::DAY_FANS_WANT, name.c_str()) << tr(StrId::DAY_KEEP_PERFORMING)
+                 << Msenting << tr(StrId::DAY_DOLLAR) << "\n";
+            notices::money_plus(Msenting);
+            money += Msenting;
+        }
     }
     if (lifespan < 0) lifespan = 0;
     if (days == lifespan)
-        cout << "If nothing goes wrong, this is the last day of your pet.\n";
+        cout << tr(StrId::LIFESPAN_LAST_DAY) << "\n";
     hyphen(2);
     if (Lifespanhap + 5 <= max_hap && days != 1) {
         notices::your_pet();
@@ -455,8 +527,8 @@ static void o_days() {
     while (true) {
         if (lifespan < 0) lifespan = 0;
         if (days >= lifespan + 1) { death(); died = true; }
-        re_ini();
         if (died) break;
+        re_ini();
         notice();
         key = getch();
         interact();
@@ -467,46 +539,48 @@ static void o_days() {
         if (w_eat > 2) eat = true;
         if (w_poo > 4) poo = true;
         cout << "\n\n";
-        if (eat) { notices::your_pet(); cout << "is hungry.\n"; }
-        if (poo) { notices::your_pet(); cout << "wants to defecate.\n\n\n"; }
+        if (eat) { cout << "Your pet " << name << tr(StrId::DAY_HUNGRY) << "\n"; }
+        if (poo) { cout << "Your pet " << name << tr(StrId::DAY_WANTS_DEFECATE); }
         hyphen(1);
         cout << "\n\n";
         if (turns == 9) break;
     }
 
+    // If the pet died during this day, skip all day-end logic
+    if (died) return;
+
     // Investment return
     if (invest && days == Dinvest) {
         invest = false;
         Dinvest = 0;
-        randomnum = r_events(3, 4, 1);
-        Einvest = static_cast<float>(r_events(3, 50, 10));
+        randomnum = rand_range(1, 4);
+        Einvest = static_cast<float>(rand_range(10, 59));
         if (!cheat && !loser && randomnum == 2) {
             notices::your_pet();
-            cout << "has made a successful investment!\nRate of profit: " << Einvest << "%!\n";
+            cout << tr(StrId::INV_SUCCESS) << "\n";
             float profit = IINVEST + Einvest / 100.0f * IINVEST;
-            money += static_cast<unsigned int>(profit);
+            money += static_cast<int>(profit);
             hap += 2;
             notices::money_plus(static_cast<int>(profit));
             notices::hap_plus(2);
         } else if (!cheat && !loser) {
             notices::your_pet();
-            cout << "has failed the investment!\n";
+            cout << tr(StrId::INV_FAILED) << "\n";
             hap -= 1; sad += 2;
             notices::hap_minus(1); notices::sad_plus(2);
         } else if (loser) {
             loser = false;
         } else if (cheat && randomnum != 1) {
             notices::your_pet();
-            cout << "has made a successful investment! Profit rate: "
-                 << Einvest << "%!\n";
+            cout << tr(StrId::INV_SUCCESS) << "\n";
             float profit = IINVEST + Einvest / 100.0f * IINVEST;
-            money += static_cast<unsigned int>(profit);
+            money += static_cast<int>(profit);
             hap += 2; cheat = false;
             notices::money_plus(static_cast<int>(profit));
             notices::hap_plus(2);
         } else if (cheat && randomnum == 1) {
             notices::your_pet();
-            cout << "has failed the investment!\n";
+            cout << tr(StrId::INV_FAILED) << "\n";
             hap -= 1; sad += 2; cheat = false;
             notices::hap_minus(1); notices::sad_plus(2);
         }
@@ -517,8 +591,9 @@ static void o_days() {
         cout << "\n\n";
     }
 
-    if (key != 'Q' && key != 'q') r_e();
+    if (key != 'Q' && key != 'q') r_e_v2();
     turns = 1;
+    diary_add("  $ " + std::to_string(money) + " | Hap: " + std::to_string(hap) + "/" + std::to_string(max_hap) + " Sad: " + std::to_string(sad) + "/" + std::to_string(max_sad));
     ++days;
 }
 
@@ -533,30 +608,69 @@ static void starter_notice() {
 #endif
     options::name_choose();
     srand(static_cast<unsigned>(time(nullptr)));
+    EventConfig::init();
+    RecipeDB::init();
     Mname();
     Mname1();
     Ename();
     have_body_ini();
     per();
+    gender = (rand_gender() != 0) ? F : M;
     pausers::pause();
-    cout << "You will have a great time together, won't you?\n"
-            "You look at your pet, then suddenly realize that";
+    cout << tr(StrId::PET_INTRO_TOGETHER);
     refer(nomin);
-    cout << "might become the next Michael Jackson.\n";
+    cout << tr(StrId::PET_INTRO_MJ) << "\n";
     pausers::pause(1);
     r_lifespan();
-    Lifespanhap = r_events(1242, 85 - 60, 60);
+    Lifespanhap = rand_range(60, 84);
+}
+
+// ═══════════════════════════════════════════
+//  Language selection at startup
+// ═══════════════════════════════════════════
+
+static void choose_language() {
+    hyphen(4);
+    cout << "Language / 语言\n\n"
+         << "1)  English\n"
+         << "2)  中文\n\n"
+         << "Press 1 or 2 / 按 1 或 2: ";
+    char lang_key = getch();
+    cout << "\n";
+    if (lang_key == '1') {
+        set_language(en);
+        cout << "Language set to English.\n";
+    } else {
+        set_language(cn);
+        cout << "语言设置为中文。\n";
+    }
+    hyphen(4);
 }
 
 // ═══════════════════════════════════════════
 //  Entry point
 // ═══════════════════════════════════════════
 
-int main() {
+int main(int argc, char* argv[]) {
     cout << "Digital Pet\n" << version << " " << phase;
     if (cheatable) cout << "*";
     cout << "\n";
-    hyphen(4);
+
+    // Check for command-line language override first
+    if (argc > 1) {
+        std::string arg = argv[1];
+        if (arg == "--en" || arg == "-e") {
+            set_language(en);
+            hyphen(4);
+        } else if (arg == "--cn" || arg == "-c") {
+            set_language(cn);
+            hyphen(4);
+        } else {
+            choose_language();
+        }
+    } else {
+        choose_language();
+    }
 
     starter_notice();
 

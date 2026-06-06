@@ -1,0 +1,397 @@
+#ifndef DIGITALPET_I18N_H
+#define DIGITALPET_I18N_H
+
+#include "Types.h"
+#include <string>
+
+// ═══════════════════════════════════════════
+//  String resource IDs — every user-visible
+//  string in the game gets one entry.
+// ═══════════════════════════════════════════
+enum class StrId : unsigned short {
+    // ── Startup ──
+    NAME_PROMPT,
+    NAME_INPUT_AGAIN,
+    NAME_GOOD,
+    NAME_CRAZY,
+    NAME_MURDEROUS,
+    NAME_YOU_THOUGHT,
+
+    // ── Pet introduction ──
+    PET_INTRO_DOG,
+    PET_INTRO_CAT,
+    PET_INTRO_NAMED,
+    PET_INTRO_TOGETHER,
+    PET_INTRO_MJ,
+
+    // ── Pet states (death fragments) ──
+    PET_OLDER,
+    PET_DEPRESSED,
+    PET_SUICIDE,
+    PET_LIFE_OF,
+    PET_YEARS_AND,
+    PET_HAD_THROUGH,
+    PET_DAYS_PERIOD,
+    PET_WHEN_DIE,
+    PET_GOING_TO_DIE,
+    PET_WANTED_DEFECATE,
+    PET_STILL_HUNGRY,
+    PET_WAS_BIT_SAD,
+    PET_WAS_VERY_DEPRESSED,
+    PET_WAS_QUITE_HAPPY,
+    PET_WAS_VERY_HAPPY,
+    PET_WAS_CONFUSED,
+
+    // ── Lifespan ──
+    LIFESPAN_INC_1,
+    LIFESPAN_INC_NEED,
+    LIFESPAN_LAST_DAY,
+
+    // ── Status display ──
+    STAT_LIFESPAN_LABEL,
+    STAT_IS_DOG,
+    STAT_IS_CAT,
+    STAT_IS_AGE,
+    STAT_YEARS_OLD_NOW,
+    STAT_CAN_LIVE,
+    STAT_NEEDS_HAP,
+    STAT_TO_PROLONG,
+    STAT_EMOTION_LABEL,
+    STAT_HAPPINESS_LABEL,
+    STAT_SADNESS_LABEL,
+    STAT_PHYSIO_LABEL,
+    STAT_WANTS_DEFECATE,
+    STAT_WANTS_EAT,
+    STAT_YES,
+    STAT_NO,
+
+    // ── Day / turn ──
+    DAY_LABEL,
+    TURNS_8_NOTICE,
+    TURNS_LEFT,
+
+    // ── Notice / action menu ──
+    NOTICE_Q,
+    NOTICE_F,
+    NOTICE_I,
+    NOTICE_C,
+    NOTICE_S,
+    NOTICE_M,
+    NOTICE_B,
+    NOTICE_O,
+    NOTICE_X,
+    NOTICE_V,
+
+    // ── Interaction menu ──
+    INT_MENU_TITLE,
+    INT_A_DEFECATE,
+    INT_B_PAT,
+    INT_C_QUIT,
+
+    // ── Action handlers ──
+    ACT_QUIT_GAME,
+    ACT_FEED_PET,
+    ACT_LET_PET,
+    ACT_DEFECATE_PERIOD,
+    ACT_PAT_PET,
+
+    // ── Buying menu ──
+    BUY_HAVE_MONEY,
+    BUY_WHAT_NEXT,
+    BUY_A_ITEMS,
+    BUY_B_INGREDIENTS,
+    BUY_C_LOAN,
+    BUY_D_COOK,
+    BUY_E_QUIT,
+
+    // ── Investment info ──
+    INV_MONEY_INVESTED,
+    INV_WAIT_DAYS,
+    INV_PLEASE_AGAIN,
+
+    // ── Backpack ──
+    BP_ENERGY,
+    BP_EFFECT,
+    BP_AMOUNT,
+    BP_SELL_FEED_DUMP,
+    BP_ITEM_DROPPED,
+    BP_INPUT_NUM,
+    BP_NO_DISHES,
+
+    // ── Cheating ──
+    CHEAT_PROMPT,
+
+    // ── Starter notice (per / intro) ──
+    PER_REMEMBER,
+    PER_DOG_SCENE1,
+    PER_DOG_SCENE2,
+    PER_DOG_SCENE3,
+    PER_DOG_SCENE4,
+    PER_CAT_SCENE1,
+    PER_CAT_SCENE2,
+    PER_CAT_SCENE3,
+    PER_CAT_SCENE4,
+    PER_NAMED,
+
+    // ── Day pre-notice ──
+    DAY_HUNGRY,
+    DAY_WANTS_DEFECATE,
+    DAY_PLAYING_MOUSE,
+    DAY_FANS_WANT,
+    DAY_KEEP_PERFORMING,
+    DAY_DOLLAR,
+
+    // ── Cooking ──
+    COOK_QUIT_HINT,
+    COOK_HOW_MUCH,
+    COOK_PUT_IN,
+    COOK_GRAMS,
+    COOK_MILLILITER,
+    COOK_PIECE,
+    COOK_HUNDRED_GRAM,
+    COOK_NOT_ENOUGH,
+    COOK_NOT_ENOUGH_ONLY,
+    COOK_COLON,
+    COOK_NOTICE_1,
+    COOK_NOTICE_2,
+    COOK_NOTICE_3,
+    COOK_EMPTY_POT,
+    COOK_ENERGY,
+    COOK_KEEP_COOKING,
+    COOK_ING_SUGAR,
+    COOK_ING_SALT,
+    COOK_ING_SODA,
+    COOK_ING_WATER,
+    COOK_ING_FLOUR,
+    COOK_ING_MILK,
+    COOK_ING_EGGS,
+    COOK_ING_CHOCOLATE,
+    COOK_DISPLAY_SUGAR,
+    COOK_DISPLAY_SALT,
+    COOK_DISPLAY_SODA,
+    COOK_DISPLAY_WATER,
+    COOK_DISPLAY_FLOUR,
+    COOK_DISPLAY_MILK,
+    COOK_DISPLAY_EGGS,
+    COOK_DISPLAY_CHOCOLATE,
+    COOK_SUFFIX_SUGAR,
+    COOK_SUFFIX_SALT,
+    COOK_SUFFIX_SODA,
+    COOK_SUFFIX_WATER,
+    COOK_SUFFIX_FLOUR,
+    COOK_SUFFIX_MILK,
+    COOK_SUFFIX_EGGS,
+    COOK_SUFFIX_CHOCOLATE,
+
+    // ── Money / shop ──
+    SHOP_TITLE_ING,
+    SHOP_ING_A,
+    SHOP_ING_B,
+    SHOP_ING_C,
+    SHOP_ING_D,
+    SHOP_ING_E,
+    SHOP_ING_F,
+    SHOP_ING_G,
+    SHOP_ING_H,
+    SHOP_ING_I,
+    SHOP_ING_J,
+    SHOP_PRICE,
+    SHOP_INPUT_GRAMS,
+    SHOP_INPUT_ML,
+    SHOP_INPUT_SQM,
+    SHOP_INPUT_100ML,
+    SHOP_INPUT_EGGS,
+    SHOP_INPUT_100G,
+    SHOP_BOUGHT_SUGAR,
+    SHOP_BOUGHT_SALT,
+    SHOP_BOUGHT_WATER,
+    SHOP_BOUGHT_AIR,
+    SHOP_BOUGHT_MILK,
+    SHOP_BOUGHT_EGGS,
+    SHOP_BOUGHT_CHOCOLATE,
+    SHOP_WATER_FULL,
+    SHOP_PLEASE_AGAIN,
+    SHOP_GIVE_UP,
+    SHOP_TITLE_PROPS,
+    SHOP_PROP_A,
+    SHOP_PROP_B,
+    SHOP_PROP_C,
+    SHOP_PROP_D,
+    SHOP_PROP_E,
+    SHOP_NO_MONEY,
+    SHOP_NO_INVESTMENT,
+    SHOP_ALREADY,
+    SHOP_ALREADY_OTHER,
+
+    // ── Loan ──
+    LOAN_ALREADY,
+    LOAN_PROMPT,
+    LOAN_GIVE_UP,
+    LOAN_WRONG_NUM,
+    LOAN_MORE_THAN10,
+    LOAN_NO_DIME,
+    LOAN_CONTRACT,
+    LOAN_GIVE_UP_CONTRACT,
+    LOAN_OWE,
+    LOAN_PAY_PROMPT,
+    LOAN_PAID,
+    LOAN_NOT_ENOUGH_DEBT,
+    LOAN_REFUSE_DEBT,
+    LOAN_SCOLD,
+
+    // ── Events ──
+    EVT1_MONEY_FOUND,
+    EVT2_PAPER_TOP,
+    EVT2_SIGN_NAME,
+    EVT2_INPUT_AMOUNT,
+    EVT2_INVESTED,
+    EVT2_GIVE_UP_HAIR,
+    EVT2_ALL_MONEY,
+    EVT2_RETARD,
+    EVT3_RAN_OUT,
+    EVT3_KNOCKING,
+    EVT3_OPEN_DOOR_Q,
+    EVT3_ATE_WINDOW,
+    EVT3_ENTERED,
+    EVT3_EATS_DOOR,
+    EVT3_REFRESHED,
+    EVT3_FOUND_ITEMS,
+    EVT3_BUY_10,
+    EVT3_TOY_MOUSE_LABEL,
+    EVT3_SLIPPER_LABEL,
+    EVT3_HEART_SAVER,
+    EVT3_DONT_BUY,
+    EVT3_BOUGHT_MOUSE,
+    EVT3_ALREADY_MOUSE,
+    EVT3_BOUGHT_SLIPPER,
+    EVT3_ALREADY_SLIPPER,
+    EVT3_MONSTER,
+    EVT3_SCAMMED,
+    EVT3_LONELINESS,
+    EVT3_BOUGHT_LONE,
+    EVT4_ROCK_DAYS,
+    EVT4_BAND_START,
+    EVT4_LAST_FEED1,
+    EVT4_LAST_FEED2,
+    EVT4_LAST_FEED3,
+    EVT4_LEAVE,
+    EVT4_BAND_DAY,
+    EVT4_OPEN_TV,
+    EVT4_SWITCHING,
+    EVT4_FOUND_PET,
+    EVT4_NO_INFO,
+    EVT4_WATCH_TV_HINT,
+    EVT4_PERFORMANCE,
+    EVT4_BACK,
+    EVT4_GREAT_PERF,
+    EVT4_EARNED,
+    EVT4_BACK_LIFE,
+    EVT5_BROUGHT_BACK,
+
+    // ── TV scenes (descriptions only, not ASCII art) ──
+    TV1_MAN_ROARING,
+    TV2_GLASSES_AD,
+    TV3_OTHERS_HELL,
+    TV4_FRENCH_DEBATE,
+
+    // ── Investment resolution ──
+    INV_SUCCESS,
+    INV_FAILED,
+    INV_PROFIT_RATE,
+
+    // ── General / notices ──
+    GEN_CHOOSE_AGAIN,
+    GEN_ARE_YOU_SURE,
+    GEN_YES_NO,
+    GEN_PRESS_ANY_KEY,
+    GEN_YOUR_PET,
+    NOTIF_HAP_PLUS,
+    NOTIF_HAP_MINUS,
+    NOTIF_SAD_PLUS,
+    NOTIF_SAD_MINUS,
+    NOTIF_MONEY_PLUS,
+    NOTIF_MONEY_MINUS,
+    NOTIF_LIFESPAN_PLUS,
+    NOTIF_LIFESPAN_MINUS,
+    NOTIF_MONEY_NOT,
+    NOTIF_MONEY_HAVE,
+    NOTIF_BOUGHT_SUCCESS,
+    NOTIF_STILL_BUY,
+    NOTIF_DOLLAR_EXCL,
+
+    // ── Theme / color ──
+    THEME_CHOOSE,
+    THEME_A,
+    THEME_B,
+    THEME_C,
+    THEME_D,
+
+    // ── Ingredient check ──
+    CHECK_ING_SUGAR,
+    CHECK_ING_SALT,
+    CHECK_ING_SODA,
+    CHECK_ING_WATER,
+    CHECK_ING_FLOUR,
+    CHECK_ING_MILK,
+    CHECK_ING_EGGS,
+    CHECK_ING_CHOCOLATE,
+
+    // ── Mini Games ──
+    GAMES_KEY_HINT,
+    GAMES_TITLE,
+    GAMES_A_DICE,
+    GAMES_B_GUESS,
+    GAMES_C_SLOT,
+    GAMES_D_QUIT,
+    GAMES_BET_PROMPT,
+    GAMES_NO_MONEY,
+    GAMES_DICE_RESULT,
+    GAMES_DICE_WIN,
+    GAMES_DICE_LOSE,
+    GAMES_DICE_PUSH,
+    GAMES_GUESS_PROMPT,
+    GAMES_GUESS_RESULT,
+    GAMES_GUESS_WIN,
+    GAMES_GUESS_LOSE,
+    GAMES_SLOT_RESULT,
+    GAMES_SLOT_JACKPOT,
+    GAMES_SLOT_PAIR,
+    GAMES_SLOT_LOSE,
+
+    // ── Diary ──
+    DIARY_KEY_HINT,
+    DIARY_TITLE,
+    DIARY_EMPTY,
+    DIARY_ACT_FED,
+    DIARY_ACT_DEFECATED,
+    DIARY_ACT_PATTED,
+    DIARY_ACT_COOKED,
+    DIARY_ACT_GAME_DICE,
+    DIARY_ACT_GAME_GUESS,
+    DIARY_ACT_GAME_SLOT,
+    DIARY_ACT_EVENT1,
+    DIARY_ACT_EVENT2,
+    DIARY_ACT_EVENT3,
+    DIARY_ACT_EVENT4,
+    DIARY_ACT_EVENT5,
+
+    // ── Total count ──
+    STR_COUNT
+};
+
+// ── Global language setting ──
+extern Language g_language;
+
+// ── One-time init (currently a no-op; reserves future expansion) ──
+void i18n_init();
+
+// ── Translate a string ID to the active language ──
+const char* tr(StrId id);
+
+// ── Translate + printf-style format ──
+std::string tr_f(StrId id, ...);
+
+// ── Switch language at runtime ──
+void set_language(Language lang);
+
+#endif // DIGITALPET_I18N_H

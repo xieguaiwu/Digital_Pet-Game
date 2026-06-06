@@ -1,5 +1,6 @@
 #include "Utils.h"
 #include "Types.h"
+#include "i18n.h"
 
 #include <iostream>
 #include <limits>
@@ -25,6 +26,7 @@ int getch() {
     tcsetattr(STDIN_FILENO, TCSANOW, &newt);
     ch = getchar();
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+    if (ch == EOF) { return 'Q'; }
     return ch;
 }
 #endif
@@ -41,6 +43,25 @@ void clear_screen() {
 // ── Input validation ──
 void badint() {
     isbadint = false;
+    if (cin.fail()) {
+        cin.clear();
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        isbadint = true;
+    }
+    if (cin.eof()) {
+        cin.clear();  // clear EOF flag so subsequent reads don't loop
+        isbadint = true;
+    }
+}
+
+void badint_clear() {
+    isbadint = false;
+    if (cin.eof()) {
+        cin.clear();  // clear EOF flag to prevent infinite loop
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        isbadint = true;
+        return;
+    }
     if (cin.fail()) {
         cin.clear();
         cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -67,20 +88,44 @@ void colorc(int x) {
         if (x == green) SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_GREEN);
         if (x == blue)  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_BLUE);
         if (x == white) SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+#else
+        // ANSI escape sequences for Linux
+        if (x == red)   std::cout << "\033[31m";
+        if (x == green) std::cout << "\033[32m";
+        if (x == blue)  std::cout << "\033[34m";
+        if (x == white) std::cout << "\033[0m";
 #endif
     }
 }
 
+void colorc_ansi(int x) {
+    // Always use ANSI escape sequences (platform-independent, no theme dependency)
+    if (x == red)   std::cout << "\033[31m";
+    if (x == green) std::cout << "\033[32m";
+    if (x == blue)  std::cout << "\033[34m";
+    if (x == white) std::cout << "\033[0m";
+}
+
 // ── Pronoun ──
 void refer(int refertype) {
-    cout << " ";
-    if (refertype == nomin)  gender == M ? cout << "he" : cout << "she";
-    else if (refertype == object) gender == M ? cout << "him" : cout << "her";
-    else if (refertype == posses) gender == M ? cout << "his" : cout << "her";
-    cout << " ";
+    if (g_language == cn) {
+        // Chinese: no spaces, use 他/她
+        if      (refertype == nomin)  cout << (gender == M ? "他" : "她");
+        else if (refertype == object) cout << (gender == M ? "他" : "她");
+        else if (refertype == posses) cout << (gender == M ? "他的" : "她的");
+    } else {
+        // English: with spaces for word separation
+        cout << " ";
+        if      (refertype == nomin)  cout << (gender == M ? "he" : "she");
+        else if (refertype == object) cout << (gender == M ? "him" : "her");
+        else if (refertype == posses) cout << (gender == M ? "his" : "her");
+        cout << " ";
+    }
 }
 
 // ── Random events ──
+
+// [[deprecated]] — kept for backward compatibility; prefer the named functions below.
 int r_events(int sss, int Mranding, int Lranding) {
     if (sss == 0) {
         return 1 + rand() % (events);                       // random event type
@@ -93,19 +138,37 @@ int r_events(int sss, int Mranding, int Lranding) {
     }
 }
 
+int rand_event_type() {
+    return 1 + rand() % (events);
+}
+
+int rand_personality() {
+    return rand() % pers;
+}
+
+int rand_gender() {
+    return rand() % gens;
+}
+
+int rand_range(int min, int max) {
+    // Returns a random integer in [min, max] inclusive.
+    // Equivalent to the old r_events(_, range, min) where range = max - min + 1.
+    return min + rand() % (max - min + 1);
+}
+
 // ═══════════════════════════════════════════
 //  pausers
 // ═══════════════════════════════════════════
 
 void pausers::pause(int screen) {
-    cout << " (Press any key to continue...)\n";
+    cout << tr(StrId::GEN_PRESS_ANY_KEY) << "\n";
     getch();
     if (screen == 1) clear_screen();
 }
 
 void pausers::sure(bool besure) {
-    if (besure) cout << "Are you sure?";
-    cout << " (Press Y to confirm, and press N to refuse)\n";
+    if (besure) cout << tr(StrId::GEN_ARE_YOU_SURE);
+    cout << tr(StrId::GEN_YES_NO) << "\n";
 }
 
 // ═══════════════════════════════════════════
@@ -113,11 +176,7 @@ void pausers::sure(bool besure) {
 // ═══════════════════════════════════════════
 
 void options::color_choose() {
-    cout << "\nChoose your theme color:\n"
-            "A. Default theme (black background + white words)\n"
-            "B. Adventure theme (purple background + white words)\n"
-            "C. Elegant theme (grey background + light white words)\n"
-            "D. Normal theme (white background + black words)\n";
+    cout << "\n" << tr(StrId::THEME_CHOOSE) << "\n";
     while (true) {
         key = getch();
         auto confirm = [&]() {
@@ -129,28 +188,36 @@ void options::color_choose() {
             }
         };
         if (key == 'A' || key == 'a') {
+#ifdef _WIN32
             system("color 07");
+#endif
             if (confirm()) { theme = Tdef; break; }
         } else if (key == 'B' || key == 'b') {
+#ifdef _WIN32
             system("color df");
+#endif
             if (confirm()) { theme = Tadv; break; }
         } else if (key == 'C' || key == 'c') {
+#ifdef _WIN32
             system("color 8f");
+#endif
             if (confirm()) { theme = Tele; break; }
         } else if (key == 'D' || key == 'd') {
+#ifdef _WIN32
             system("color 70");
+#endif
             if (confirm()) { theme = Tnor; break; }
         }
     }
 }
 
 void options::name_choose() {
-    cout << "\nInput the name of your digital pet:\n";
+    cout << "\n" << tr(StrId::NAME_PROMPT) << "\n";
     std::getline(cin, name);
     while (true) {
         if (name != "" && name != " " && name != "  " &&
             name != "   " && name != "    ") break;
-        cout << "Please input again:";
+        cout << tr(StrId::NAME_INPUT_AGAIN);
         std::getline(cin, name);
     }
     if (name == "毛茛" || name == "毛艮" || name == "morgan" || name == "Morgan")
@@ -158,60 +225,60 @@ void options::name_choose() {
     if (name == "Rick" || name == "Joker")
         name = "杀人犯";
     pausers::pause(1);
-    cout << "'" << name << "' you thought.";
-    if (name == "比利")                cout << "What a crazy name.\n";
-    else if (name == "杀人犯")         cout << "This sounds murderous.\n";
-    else                               cout << "What a good name this is.\n";
+    cout << "'" << name << tr(StrId::NAME_YOU_THOUGHT) << "\n";
+    if (name == "比利")                cout << tr(StrId::NAME_CRAZY) << "\n";
+    else if (name == "杀人犯")         cout << tr(StrId::NAME_MURDEROUS) << "\n";
+    else                               cout << tr(StrId::NAME_GOOD) << "\n";
 }
 
 // ═══════════════════════════════════════════
 //  notices
 // ═══════════════════════════════════════════
 
-void notices::still_buy()          { cout << "Continue to buy?"; pausers::sure(false); }
-void notices::choose_again()       { cout << "Please choose again!\n"; }
-void notices::your_pet()           { cout << "Your pet " << name << " "; }
-void notices::hap_plus(int hapin)    { colorc(green); cout << "Happiness [+" << hapin << "]!\n";  colorc(white); }
-void notices::hap_minus(int hapout)  { colorc(red);   cout << "Happiness [-" << hapout << "]!\n"; colorc(white); }
-void notices::lifespan_plus(int v)   { colorc(red);   cout << "Happiness needed to increase lifespan [+" << v << "]!\n"; colorc(white); }
-void notices::lifespan_minus(int v)  { colorc(green); cout << "Happiness needed to increase lifespan [-" << v << "]!\n"; colorc(white); }
-void notices::sad_plus(int v)        { colorc(red);   cout << "Sadness [+" << v << "]!\n";  colorc(white); }
-void notices::sad_minus(int v)       { colorc(green); cout << "Sadness [-" << v << "]!\n";  colorc(white); }
-void notices::money_plus(int v)      { colorc(green); cout << "$ [+" << v << "]!\n";        colorc(white); }
-void notices::money_minus(int v)     { colorc(red);   cout << "$ [-" << v << "]!\n";        colorc(white); }
-void notices::money_not()            { colorc(red);   cout << "Sorry, but you don't have enough money!\n"; colorc(white); }
-void notices::money_have()           { colorc(blue);  cout << "You have $ " << money << " !\n"; colorc(white); }
-void notices::bought_success()       { colorc(blue);  cout << "Bought successfully!\n";     colorc(white); }
+void notices::still_buy()          { cout << tr(StrId::NOTIF_STILL_BUY); pausers::sure(false); }
+void notices::choose_again()       { cout << tr(StrId::GEN_CHOOSE_AGAIN) << "\n"; }
+void notices::your_pet()           { cout << tr_f(StrId::GEN_YOUR_PET, name.c_str()); }
+void notices::hap_plus(int hapin)    { colorc(green); cout << tr_f(StrId::NOTIF_HAP_PLUS, hapin) << "\n";  colorc(white); }
+void notices::hap_minus(int hapout)  { colorc(red);   cout << tr_f(StrId::NOTIF_HAP_MINUS, hapout) << "\n"; colorc(white); }
+void notices::lifespan_plus(int v)   { colorc(red);   cout << tr_f(StrId::NOTIF_LIFESPAN_PLUS, v) << "\n"; colorc(white); }
+void notices::lifespan_minus(int v)  { colorc(green); cout << tr_f(StrId::NOTIF_LIFESPAN_MINUS, v) << "\n"; colorc(white); }
+void notices::sad_plus(int v)        { colorc(red);   cout << tr_f(StrId::NOTIF_SAD_PLUS, v) << "\n";  colorc(white); }
+void notices::sad_minus(int v)       { colorc(green); cout << tr_f(StrId::NOTIF_SAD_MINUS, v) << "\n";  colorc(white); }
+void notices::money_plus(int v)      { colorc(green); cout << tr_f(StrId::NOTIF_MONEY_PLUS, v) << "\n";        colorc(white); }
+void notices::money_minus(int v)     { colorc(red);   cout << tr_f(StrId::NOTIF_MONEY_MINUS, v) << "\n";        colorc(white); }
+void notices::money_not()            { colorc(red);   cout << tr(StrId::NOTIF_MONEY_NOT) << "\n"; colorc(white); }
+void notices::money_have()           { colorc(blue);  cout << tr_f(StrId::NOTIF_MONEY_HAVE, money) << "\n"; colorc(white); }
+void notices::bought_success()       { colorc(blue);  cout << tr(StrId::NOTIF_BOUGHT_SUCCESS) << "\n";     colorc(white); }
 
 // ═══════════════════════════════════════════
 //  Pet initialisation
 // ═══════════════════════════════════════════
 
 void per() {
-    cout << "You remember the day you met " << name << ":";
-    randomnum = r_events(1);
-    Pab = (randomnum != 0);
+    cout << tr_f(StrId::PER_REMEMBER, name.c_str());
+    randomnum = rand_personality();
+    Pab = (randomnum != 0) ? cat : dog;
     if (Pab == dog) {
-        cout << "You saw a puppy at a pet store. You liked";
+        cout << tr(StrId::PER_DOG_SCENE1);
         refer(posses);
-        cout << " mad look, so you took";
+        cout << tr(StrId::PER_DOG_SCENE2);
         refer(object);
-        cout << "home.";
+        cout << tr(StrId::PER_DOG_SCENE3);
     } else {
-        cout << "You saw a snoring pussy in a carton. After giving";
+        cout << tr(StrId::PER_CAT_SCENE1);
         refer(object);
-        cout << "some saussages, you took";
+        cout << tr(StrId::PER_CAT_SCENE2);
         refer(object);
-        cout << "home.";
+        cout << tr(StrId::PER_CAT_SCENE3);
     }
-    cout << "And now you have named";
+    cout << tr(StrId::PER_NAMED);
     refer(object);
     cout << ".\n";
 }
 
 void r_lifespan() {
     if (Pab == cat)
-        lifespan = 20 + rand() % (40 - 20);   // cat: 2–4 years (converted to days)
+        lifespan = 25 + rand() % (40 - 25);   // cat: 25-39
     else
-        lifespan = 15 + rand() % (50 - 15);   // dog: 1.5–5 years
+        lifespan = 20 + rand() % (45 - 20);   // dog: 20-44
 }
