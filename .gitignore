@@ -1,0 +1,14 @@
+# Binaries
+DigitalPet
+DigitalPet.exe
+
+# AI skill file — local only, not part of project
+copr_packaging.md
+
+# Object files
+*.o
+*.obj
+
+# Build artifacts
+obj/
+src/*.o
