@@ -1,5 +1,6 @@
 CXX      := g++
-CXXFLAGS := -std=c++11 -Wall -Wextra -O2 -I include
+CXXFLAGS := -std=c++11 -Wall -Wextra -O2
+INCLUDES := -I include
 LDFLAGS  :=
 TARGET   := DigitalPet
 SRCDIR   := src
@@ -16,10 +17,10 @@ $(OBJDIR):
 	mkdir -p $(OBJDIR)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp | $(OBJDIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
 $(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
 run: $(TARGET)
 	./$(TARGET)
