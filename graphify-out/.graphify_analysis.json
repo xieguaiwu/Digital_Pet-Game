@@ -1,0 +1,451 @@
+{
+  "communities": {
+    "0": [
+      "language",
+      "src_cooking_cdrop",
+      "src_cooking_cincook_v2",
+      "src_game",
+      "src_game_choose_language",
+      "src_game_death",
+      "src_game_e_age",
+      "src_game_e_eat",
+      "src_game_e_hap",
+      "src_game_e_poo",
+      "src_game_e_sad",
+      "src_game_handle_backpacking",
+      "src_game_handle_buying",
+      "src_game_handle_clear_screen",
+      "src_game_handle_color_change",
+      "src_game_handle_default",
+      "src_game_handle_interact_with",
+      "src_game_handle_investment_info",
+      "src_game_handle_quit_game",
+      "src_game_handle_quit_interaction_menu",
+      "src_game_handle_status_display",
+      "src_game_interact",
+      "src_game_main",
+      "src_game_notice",
+      "src_game_o_days",
+      "src_game_o_days_pre_notice",
+      "src_game_re_ini",
+      "src_game_sub_handle_backpack_item_display",
+      "src_game_sub_handle_backpack_item_interaction",
+      "src_i18n_set_language",
+      "src_money",
+      "src_money_check_cooking_ingredient",
+      "src_money_handle_pay_back_in_arrears",
+      "src_money_handle_pay_back_out_arrears",
+      "src_money_m",
+      "src_money_m_cok",
+      "src_money_m_det",
+      "src_money_m_notice",
+      "src_money_m_stu",
+      "src_utils_clear_screen",
+      "src_utils_colorc_ansi",
+      "src_utils_getch",
+      "src_utils_hyphen",
+      "src_utils_options_color_choose",
+      "src_utils_pausers_pause"
+    ],
+    "1": [
+      "include_body",
+      "include_cooking",
+      "include_i18n",
+      "include_recipedb",
+      "include_recipedb_h_vector",
+      "include_recipedb_ingredientreq",
+      "include_recipedb_ingredientreq_chocolate",
+      "include_recipedb_ingredientreq_eggs",
+      "include_recipedb_ingredientreq_flour",
+      "include_recipedb_ingredientreq_milk",
+      "include_recipedb_ingredientreq_salt",
+      "include_recipedb_ingredientreq_soda",
+      "include_recipedb_ingredientreq_sugar",
+      "include_recipedb_ingredientreq_water",
+      "include_recipedb_recipedb",
+      "include_recipedb_recipedb_count",
+      "include_recipedb_recipedb_exact_match",
+      "include_recipedb_recipedb_init",
+      "include_recipedb_recipedb_is_all_zero",
+      "include_recipedb_recipedb_loose_match",
+      "include_recipedb_recipedb_s_recipes",
+      "include_recipedb_recipedef",
+      "include_recipedb_recipedef_base_calories",
+      "include_recipedb_recipedef_dish",
+      "include_recipedb_recipedef_effect",
+      "include_recipedb_recipedef_name",
+      "include_recipedb_recipedef_req",
+      "include_recipedb_recipedef_taste",
+      "include_types",
+      "mealtype",
+      "src_recipedb",
+      "src_recipedb_recipedb_count",
+      "src_recipedb_recipedb_exact_match",
+      "src_recipedb_recipedb_init",
+      "src_recipedb_recipedb_is_all_zero",
+      "src_recipedb_recipedb_loose_match",
+      "src_recipedb_recipedb_match",
+      "taste"
+    ],
+    "2": [
+      "src_diary",
+      "src_diary_cpp_string",
+      "src_diary_diary_add",
+      "src_diary_diary_new_day",
+      "src_diary_diary_view",
+      "src_events",
+      "src_events_band_days",
+      "src_events_bback",
+      "src_events_binteract",
+      "src_events_btv1",
+      "src_events_btv2",
+      "src_events_btv3",
+      "src_events_btv4",
+      "src_events_handle_buy_10_dollars",
+      "src_events_handle_eating_door",
+      "src_events_handle_investment_deposit",
+      "src_events_handle_opening_door",
+      "src_events_r1",
+      "src_events_r2",
+      "src_events_r3",
+      "src_events_r4",
+      "src_events_r5",
+      "src_events_r_e",
+      "src_game_handle_cheating",
+      "src_game_handle_defecate",
+      "src_game_handle_feed_pet",
+      "src_game_handle_pat",
+      "src_i18n_tr",
+      "src_utils_rand_range",
+      "src_utils_refer"
+    ],
+    "3": [
+      "eventhandler",
+      "include_diary",
+      "include_eventconfig",
+      "include_eventconfig_eventcondition",
+      "include_eventconfig_eventcondition_evaluate",
+      "include_eventconfig_eventcondition_once_flag",
+      "include_eventconfig_eventcondition_once_only",
+      "include_eventconfig_eventcondition_require_money_gt_0",
+      "include_eventconfig_eventcondition_require_no_investment",
+      "include_eventconfig_eventcondition_require_not_bband",
+      "include_eventconfig_eventconfig",
+      "include_eventconfig_eventconfig_count",
+      "include_eventconfig_eventconfig_init",
+      "include_eventconfig_eventconfig_register_event",
+      "include_eventconfig_eventconfig_s_events",
+      "include_eventconfig_eventconfig_select_random_event",
+      "include_eventconfig_eventdef",
+      "include_eventconfig_eventdef_condition",
+      "include_eventconfig_eventdef_execute",
+      "include_eventconfig_eventdef_name",
+      "include_eventconfig_eventdef_weight",
+      "include_eventconfig_h_vector",
+      "src_eventconfig",
+      "src_eventconfig_eventcondition_evaluate",
+      "src_eventconfig_eventconfig_count",
+      "src_eventconfig_eventconfig_init",
+      "src_eventconfig_eventconfig_register_event",
+      "src_eventconfig_eventconfig_select_random_event",
+      "src_events_r_e_v2"
+    ],
+    "4": [
+      "src_i18n",
+      "src_i18n_cpp_string",
+      "src_i18n_i18n_init",
+      "src_i18n_tr_f",
+      "src_utils",
+      "src_utils_badint",
+      "src_utils_colorc",
+      "src_utils_notices_bought_success",
+      "src_utils_notices_choose_again",
+      "src_utils_notices_hap_minus",
+      "src_utils_notices_hap_plus",
+      "src_utils_notices_lifespan_minus",
+      "src_utils_notices_lifespan_plus",
+      "src_utils_notices_money_have",
+      "src_utils_notices_money_minus",
+      "src_utils_notices_money_not",
+      "src_utils_notices_money_plus",
+      "src_utils_notices_sad_minus",
+      "src_utils_notices_sad_plus",
+      "src_utils_notices_still_buy",
+      "src_utils_notices_your_pet",
+      "src_utils_options_name_choose",
+      "src_utils_pausers_sure",
+      "src_utils_per",
+      "src_utils_r_events",
+      "src_utils_rand_event_type",
+      "src_utils_rand_personality",
+      "strid"
+    ],
+    "5": [
+      "include_gamestate",
+      "include_utils",
+      "include_utils_notices",
+      "include_utils_notices_bought_success",
+      "include_utils_notices_choose_again",
+      "include_utils_notices_hap_minus",
+      "include_utils_notices_hap_plus",
+      "include_utils_notices_lifespan_minus",
+      "include_utils_notices_lifespan_plus",
+      "include_utils_notices_money_have",
+      "include_utils_notices_money_minus",
+      "include_utils_notices_money_not",
+      "include_utils_notices_money_plus",
+      "include_utils_notices_sad_minus",
+      "include_utils_notices_sad_plus",
+      "include_utils_notices_still_buy",
+      "include_utils_notices_your_pet",
+      "include_utils_options",
+      "include_utils_options_color_choose",
+      "include_utils_options_name_choose",
+      "include_utils_pausers",
+      "include_utils_pausers_pause",
+      "include_utils_pausers_sure"
+    ],
+    "6": [
+      "include_recipedb_recipedb_match",
+      "src_cooking",
+      "src_cooking_cclean",
+      "src_cooking_cfour",
+      "src_cooking_cincook",
+      "src_cooking_cook",
+      "src_cooking_cook_random_notice",
+      "src_cooking_cook_v2",
+      "src_cooking_cpp_string",
+      "src_cooking_cpushback",
+      "src_cooking_ename",
+      "src_cooking_handle_putting",
+      "src_cooking_handle_putting_v2",
+      "src_cooking_meal_all",
+      "src_cooking_meal_effect",
+      "src_cooking_meal_nam",
+      "src_cooking_meal_tas",
+      "src_cooking_mname",
+      "src_cooking_mname1",
+      "src_game_starter_notice",
+      "src_utils_r_lifespan",
+      "src_utils_rand_gender"
+    ],
+    "7": [
+      "architecture_bug1",
+      "architecture_bug10",
+      "architecture_bug11",
+      "architecture_bug2",
+      "architecture_bug3",
+      "architecture_bug4",
+      "architecture_bug5",
+      "architecture_bug6",
+      "architecture_bug7",
+      "architecture_bug8",
+      "architecture_bug9",
+      "architecture_file",
+      "architecture_plan_a",
+      "architecture_plan_b",
+      "architecture_plan_c",
+      "architecture_plan_d",
+      "digitalpet_project",
+      "readme_file",
+      "tutorial_cn_file",
+      "tutorial_file"
+    ],
+    "8": [
+      "include_body_typesgive",
+      "include_body_typesgive_arm_type_give",
+      "include_body_typesgive_face_type_give",
+      "include_body_typesgive_leg_type_give",
+      "src_body",
+      "src_body_body_describe",
+      "src_body_certain_body_give",
+      "src_body_have_body",
+      "src_body_have_body_ini",
+      "src_body_typesgive_arm_type_give",
+      "src_body_typesgive_face_type_give",
+      "src_body_typesgive_leg_type_give"
+    ],
+    "9": [
+      "src_games",
+      "src_games_handle_minigames",
+      "src_games_play_dice",
+      "src_games_play_guess_number",
+      "src_games_play_slot_machine",
+      "src_utils_badint_clear"
+    ],
+    "10": [
+      "include_events"
+    ],
+    "11": [
+      "include_games"
+    ],
+    "12": [
+      "include_money"
+    ],
+    "13": [
+      "src_gamestate"
+    ]
+  },
+  "cohesion": {
+    "0": 0.11717171717171718,
+    "1": 0.06543385490753911,
+    "2": 0.19310344827586207,
+    "3": 0.07881773399014778,
+    "4": 0.12962962962962962,
+    "5": 0.08695652173913043,
+    "6": 0.1645021645021645,
+    "7": 0.15789473684210525,
+    "8": 0.2727272727272727,
+    "9": 0.6666666666666666,
+    "10": 1.0,
+    "11": 1.0,
+    "12": 1.0,
+    "13": 1.0
+  },
+  "gods": [
+    {
+      "id": "src_i18n_tr",
+      "label": "tr()",
+      "degree": 62
+    },
+    {
+      "id": "src_i18n_tr_f",
+      "label": "tr_f()",
+      "degree": 44
+    },
+    {
+      "id": "src_utils_hyphen",
+      "label": "hyphen()",
+      "degree": 28
+    },
+    {
+      "id": "src_utils_getch",
+      "label": "getch()",
+      "degree": 23
+    },
+    {
+      "id": "src_game_interact",
+      "label": "interact()",
+      "degree": 17
+    },
+    {
+      "id": "include_recipedb_ingredientreq",
+      "label": "IngredientReq",
+      "degree": 15
+    },
+    {
+      "id": "include_utils_notices",
+      "label": "notices",
+      "degree": 15
+    },
+    {
+      "id": "src_game_handle_cheating",
+      "label": "handle_cheating()",
+      "degree": 14
+    },
+    {
+      "id": "src_game_starter_notice",
+      "label": "starter_notice()",
+      "degree": 14
+    },
+    {
+      "id": "src_utils_rand_range",
+      "label": "rand_range()",
+      "degree": 14
+    }
+  ],
+  "surprises": [
+    {
+      "source": "starter_notice()",
+      "target": "init",
+      "source_files": [
+        "src/Game.cpp",
+        "include/EventConfig.h"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; bridges separate communities; peripheral node `init` unexpectedly reaches hub `starter_notice()`"
+    },
+    {
+      "source": "starter_notice()",
+      "target": "init",
+      "source_files": [
+        "src/Game.cpp",
+        "include/RecipeDB.h"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; bridges separate communities; peripheral node `init` unexpectedly reaches hub `starter_notice()`"
+    },
+    {
+      "source": "RecipeDB::match()",
+      "target": "is_all_zero",
+      "source_files": [
+        "src/RecipeDB.cpp",
+        "include/RecipeDB.h"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `is_all_zero` unexpectedly reaches hub `RecipeDB::match()`"
+    },
+    {
+      "source": "RecipeDB::match()",
+      "target": "exact_match",
+      "source_files": [
+        "src/RecipeDB.cpp",
+        "include/RecipeDB.h"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `exact_match` unexpectedly reaches hub `RecipeDB::match()`"
+    },
+    {
+      "source": "RecipeDB::match()",
+      "target": "loose_match",
+      "source_files": [
+        "src/RecipeDB.cpp",
+        "include/RecipeDB.h"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `loose_match` unexpectedly reaches hub `RecipeDB::match()`"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `tr()` connect `Diary & Cheating` to `Game Input & Language`, `Minigames`, `Internationalization & Notices`, `Cooking Mechanics`?",
+      "why": "High betweenness centrality (0.198) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `starter_notice()` connect `Cooking Mechanics` to `Game Input & Language`, `Cooking Ingredients`, `Diary & Cheating`, `Event Conditions`, `Internationalization & Notices`, `Body Part Types`?",
+      "why": "High betweenness centrality (0.118) - this node is a cross-community bridge."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 59 inferred relationships involving `tr()` (e.g. with `Cincook()` and `Cincook_v2()`) actually correct?",
+      "why": "`tr()` has 59 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 40 inferred relationships involving `tr_f()` (e.g. with `Cincook()` and `Cincook_v2()`) actually correct?",
+      "why": "`tr_f()` has 40 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 27 inferred relationships involving `hyphen()` (e.g. with `Cincook()` and `Cincook_v2()`) actually correct?",
+      "why": "`hyphen()` has 27 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 20 inferred relationships involving `getch()` (e.g. with `Cincook()` and `Cincook_v2()`) actually correct?",
+      "why": "`getch()` has 20 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 3 inferred relationships involving `interact()` (e.g. with `diary_view()` and `handle_minigames()`) actually correct?",
+      "why": "`interact()` has 3 INFERRED edges - model-reasoned connections that need verification."
+    }
+  ]
+}
